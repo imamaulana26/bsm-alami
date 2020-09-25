@@ -1,39 +1,39 @@
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
-<script src="<?= base_url('assets/template') ?> /plugins/jquery/jquery.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
-<script src="<?= base_url('assets/template') ?> /plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- Bootstrap Select -->
-<script src="<?= base_url('assets/template') ?> /plugins/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 <!-- overlayScrollbars -->
-<script src="<?= base_url('assets/template') ?> /plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- DataTables -->
-<script src="<?= base_url('assets/template') ?> /plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <!-- AdminLTE App -->
-<script src="<?= base_url('assets/template') ?> /dist/js/adminlte.js"></script>
+<script src="<?= base_url('assets/template') ?>/dist/js/adminlte.js"></script>
 <!-- Toastr -->
-<script src="<?= base_url('assets/template') ?> /plugins/toastr/toastr.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/toastr/toastr.min.js"></script>
 <!-- Sweetalert2 -->
-<script src="<?= base_url('assets/template') ?> /plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- OPTIONAL SCRIPTS -->
-<script src="<?= base_url('assets/template') ?> /dist/js/demo.js"></script>
+<script src="<?= base_url('assets/template') ?>/dist/js/demo.js"></script>
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
-<script src="<?= base_url('assets/template') ?> /plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/raphael/raphael.min.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/jquery-mapael/jquery.mapael.min.js"></script>
-<script src="<?= base_url('assets/template') ?> /plugins/jquery-mapael/maps/usa_states.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/raphael/raphael.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/jquery-mapael/maps/usa_states.min.js"></script>
 <!-- ChartJS -->
-<script src="<?= base_url('assets/template') ?> /plugins/chart.js/Chart.min.js"></script>
+<script src="<?= base_url('assets/template') ?>/plugins/chart.js/Chart.min.js"></script>
 <!-- PAGE SCRIPTS -->
 <?php if ($this->uri->segment(2) == 'dashboard') : ?>
-	<script src="<?= base_url('assets/template') ?> /dist/js/pages/dashboard2.js"></script>
+	<script src="<?= base_url('assets/template') ?>/dist/js/pages/dashboard2.js"></script>
 <?php endif; ?>
 <!-- My Script -->
-<script src="<?= base_url('assets') ?> /js/style.js"></script>
+<script src="<?= base_url('assets') ?>/js/style.js"></script>
 
 <!-- active menu -->
 <script>
