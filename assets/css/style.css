@@ -1,0 +1,27 @@
+/* Navbrand Logo */
+#profileImage {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: #512DA8;
+	font-size: 18px;
+	font-weight: bold;
+	color: #fff;
+	line-height: 28px;
+	margin: 0 0 0 10px;
+}
+
+#profileImage span {
+	margin-left: 3px;
+}
+
+#profileImage .brand-text {
+	margin-left: 5px;
+	font-weight: bold;
+}
+
+/* Bootstrap Select */
+.btn.dropdown-toggle {
+	border: 1px solid #ced4da !important;
+	background-color: #fff !important;
+}
