@@ -11,10 +11,16 @@ class Dashboard extends CI_Controller
 
 	public function index()
 	{
+		$qry = $this->db->select('*')->from('tbl_list_pembiayaan a')
+			->join('tbl_profile_perusahaan b', 'a.fk_kd_perusahaan = b.kd_perusahaan', 'left')
+			->join('tbl_ag_tagihan c', 'c.fk_kd_invoice = a.kd_invoice', 'left')
+			->join('tbl_tagihan d', 'c.id_tagihan = d.fk_id_tagihan', 'left')
+			->get()->result_array();
+
 		$data = array(
 			'page' => 'sales/v_dashboard',
 			'title' => 'Dashboard',
-			'data' => $this->db->select('a.*, b.kd_perusahaan, b.nm_perusahaan')->from('tbl_list_pembiayaan a')->join('tbl_profile_perusahaan b', 'a.fk_kd_perusahaan = b.kd_perusahaan', 'left')->get()->result_array()
+			'data' => $qry
 		);
 
 		$this->load->view('layout/content', $data);

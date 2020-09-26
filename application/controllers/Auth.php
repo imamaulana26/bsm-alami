@@ -8,6 +8,7 @@ class Auth extends CI_Controller
 		parent::__construct();
 
 		$this->load->helper(array('cookie', 'string'));
+		// $this->db->update('tbl_user', ['is_active' => 0], ['is_active' => 1]);
 	}
 
 	public function index()
