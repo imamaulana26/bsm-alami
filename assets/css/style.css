@@ -8,11 +8,11 @@
 	font-weight: bold;
 	color: #fff;
 	line-height: 28px;
-	margin: 0 0 0 10px;
+	margin-left: 10px;
 }
 
 #profileImage span {
-	margin-left: 3px;
+	margin-left: 5px;
 }
 
 #profileImage .brand-text {

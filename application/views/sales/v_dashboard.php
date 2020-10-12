@@ -64,46 +64,55 @@
 			</div><!-- /.row -->
 
 			<div class="row">
-				<div class="info-box">
-					<div class="col-md-12">
-						<table class="table table-bordered table-hover" id="tbl_warning">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>ID Pembiayaan</th>
-									<th>Nama Nasabah</th>
-									<th class="text-center">Tgl. Jatuh Tempo Invoice</th>
-									<th class="text-center">Nominal Tagihan</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php $no = 1;
-								foreach ($data as $dt) :
-									$db_tgl = date_create($dt['tgl_jatem']);
-									$now = date_create(date('Y-m-d'));
-									$diff = date_diff($db_tgl, $now);
-									if ($diff->format('%a') <= 100) : ?>
-										<tr>
-											<td><?= $no++; ?></td>
-											<td><?= $dt['kd_invoice']; ?></td>
-											<td>
-												<?= $dt['nm_perusahaan']; ?>
-												<div class="dropdown-divider"></div>
-												<?= $dt['kd_perusahaan']; ?>
-											</td>
-											<td class="text-center">
-												<?= tgl_indo($dt['tgl_jatem']); ?>
-												<div class="dropdown-divider"></div>
-												<?= $diff->format('%R%a day(s)'); ?>
-											</td>
-											<td class="text-center">
-												Rp <?= number_format($dt['nom_tagihan'], 0, '.', ',') ?>
-											</td>
-										</tr>
-								<?php endif;
-								endforeach; ?>
-							</tbody>
-						</table>
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title"><b>Early Warning Sign</b></h5>
+						</div>
+						<div class="card-body">
+							<table class="table table-bordered table-hover" id="tbl_warning">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Pemproses</th>
+										<th>ID Pembiayaan</th>
+										<th>Nama Nasabah</th>
+										<th class="text-center">No. Invoice / Tagihan</th>
+										<th class="text-center">Tgl. Jatuh Tempo Invoice</th>
+										<th class="text-center">Nominal Tagihan</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php $no = 1;
+									foreach ($data as $dt) :
+										$db_tgl = date_create($dt['tgl_jatem']);
+										$now = date_create(date('Y-m-d'));
+										$diff = date_diff($db_tgl, $now);
+										if ($diff->format('%a') <= 100) : ?>
+											<tr>
+												<td><?= $no++; ?></td>
+												<td><?= $dt['nama']; ?></td>
+												<td><?= $dt['kd_invoice']; ?></td>
+												<td>
+													<?= $dt['nm_perusahaan']; ?>
+													<div class="dropdown-divider"></div>
+													<?= $dt['kd_perusahaan']; ?>
+												</td>
+												<td class="text-center"><?= $dt['no_tagihan']; ?></td>
+												<td class="text-center">
+													<?= tgl_indo($dt['tgl_jatem']); ?>
+													<div class="dropdown-divider"></div>
+													<?= $diff->format('%R%a day(s)'); ?>
+												</td>
+												<td class="text-center">
+													Rp <?= number_format($dt['nom_tagihan'], 0, '.', ',') ?>
+												</td>
+											</tr>
+									<?php endif;
+									endforeach; ?>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

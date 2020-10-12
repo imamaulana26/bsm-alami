@@ -156,24 +156,7 @@
 												<th>NPWP Persorangan</th>
 											</tr>
 										</thead>
-										<tbody>
-											<!-- <tr>
-												<td>1</td>
-												<td>Perseorangan</td>
-												<td>Berri Suandi</td>
-												<td class="text-center">60 %</td>
-												<td>3175092406910008</td>
-												<td>89.057.289.4-009.000</td>
-											</tr>
-											<tr>
-												<td>2</td>
-												<td>Perseorangan</td>
-												<td>Rani Kusuma Pratiwi</td>
-												<td class="text-center">40 %</td>
-												<td>3276024610900003</td>
-												<td>89.057.289.4-008.000</td>
-											</tr> -->
-										</tbody>
+										<tbody></tbody>
 									</table>
 									<br>
 
@@ -316,15 +299,7 @@
 												<th>Tanggal Jatuh Tempo</th>
 											</tr>
 										</thead>
-										<tbody>
-											<!-- <tr>
-												<td>1</td>
-												<td>122120212647</td>
-												<td>Rp 2.000.000.000,00</td>
-												<td>21 Desember 2020</td>
-												<td>31 Desember 2020</td>
-											</tr> -->
-										</tbody>
+										<tbody></tbody>
 									</table>
 									<div class="form-group">
 										<label>Deskripsi Pekerjaan</label>
@@ -484,56 +459,6 @@
 										</thead>
 										<tbody></tbody>
 									</table>
-									<!-- <label id="txt_invoice">Invoice 1 ( 122120212647 )</label>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Invoice / Faktur</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="ft_invoice" id="ft_invoice" value="invoice-barang-532x628.png" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-paperclip"></i></span>
-												</div>
-											</div>
-										</div>
-										<div class="form-group col-md-4">
-											<label>SPK / PO</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="ft_spk" id="ft_spk" value="SPK.jpg" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-paperclip"></i></span>
-												</div>
-											</div>
-										</div>
-										<div class="form-group col-md-4">
-											<label>Faktur Pajak</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="ft_faktur_pajak" id="ft_faktur_pajak" value="Fakturpajak.jpg" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-paperclip"></i></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Berita Acara Serah Terima</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="ft_ba_serah_terima" id="ft_ba_serah_terima" value="BAserahterima.jpg" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-paperclip"></i></span>
-												</div>
-											</div>
-										</div>
-										<div class="form-group col-md-4">
-											<label>Tanda Terima Invoice (Invoice Receipt)</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="ft_tanda_terima" id="ft_tanda_terima" value="Tandaterimainvoice.png" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-paperclip"></i></span>
-												</div>
-											</div>
-										</div>
-									</div> -->
 
 									<h5 class="mb-3"><i class="fa fa-paste"></i> Dokumen Lainnya</h5>
 									<div class="form-row">
@@ -583,108 +508,6 @@
 									<h5 class="mb-3"><i class="fa fa-hand-holding-usd"></i> Kapasiltas & Modal</h5>
 									<label>Note : Isi laporan keuangan dalam format ribuan (Ex: 1.000.000.000 isi dengan 1.000.000)</label>
 									<div id="li_lap_keuangan"></div>
-									<!-- <div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Periode</label>
-											<div class="input-group mb-3">
-												<input type="text" class="form-control" name="periode" id="periode" value="Desember" readonly>
-												<div class="input-group-append" style="cursor: pointer;">
-													<span class="input-group-text"><i class="fa fa-calendar"></i></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Pendapatan</label>
-											<input type="text" class="form-control" name="pendapatan" id="pendapatan" value="Rp 3.000.000.000,00" readonly>
-											<span class="form-text text-muted">Total Penjualan</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Laba Kotor</label>
-											<input type="text" class="form-control" name="laba_kotor" id="laba_kotor" value="Rp 2.800.000.000,00" readonly>
-											<span class="form-text text-muted">Pendapatan dikurangi Harga Pokok Produksi atau biaya yang langsung berhubungan dengan penjualan</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Laba Operasional</label>
-											<input type="text" class="form-control" name="laba_operasional" id="laba_operasional" value="Rp 2.600.000.000,00" readonly>
-											<span class="form-text text-muted">Laba kotor dikurangi biaya marketing dan umum. Semua biaya disini adalah biaya operasional yang tidak berkaitan langsung dengan penjualan</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Laba Bersih</label>
-											<input type="text" class="form-control" name="laba_bersih" id="laba_bersih" value="Rp 2.500.000.000,00" readonly>
-											<span class="form-text text-muted">Laba operasional dikurangi biaya non-operasional, beban bunga dan beban pajak</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Piutang Dagang</label>
-											<input type="text" class="form-control" name="piutang_dagang" id="piutang_dagang" value="Rp 100.000.000,00" readonly>
-											<span class="form-text text-muted">Tagihan yang belum dibayarkan oleh pembeli</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Total Asset</label>
-											<input type="text" class="form-control" name="total_asset" id="total_asset" value="Rp 10.000.000.000,00" readonly>
-											<span class="form-text text-muted">Total asset perusahaan yang melingkupi kas, asset tetap, piutang, dan lainnya</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Total Hutang</label>
-											<input type="text" class="form-control" name="total_hutang" id="total_hutang" value="Rp 500.000.000,00" readonly>
-											<span class="form-text text-muted">Total hutang berbunga terhadap institusi keuangan seperti bank, leasing dan hutang terhadap pemegang saham</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Ekuitas</label>
-											<input type="text" class="form-control" name="ekuitas" id="ekuitas" value="Rp 2.000.000.000,00" readonly>
-											<span class="form-text text-muted">Modal dari perusahaan, suntikan dana dari pemegang saham dan akumulasi dari laba ditahan</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Aktiva Lancar</label>
-											<input type="text" class="form-control" name="aktiva_lancar" id="aktiva_lancar" value="Rp 1.000.000.000,00" readonly>
-											<span class="form-text text-muted">Aktiva Lancar</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Hutang Lancar</label>
-											<input type="text" class="form-control" name="hutang_lancar" id="hutang_lancar" value="Rp 100.000.000,00" readonly>
-											<span class="form-text text-muted">Hutang Lancar</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Margin Laba Bersih</label>
-											<input type="text" class="form-control" name="margin_laba" id="margin_laba" value="83,33 %" readonly>
-											<span class="form-text text-muted">Laba Bersih terhadap Pendapatan</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Rasio Hutang terhadap Modal</label>
-											<input type="text" class="form-control" name="ratio_hutang" id="ratio_hutang" value="0,25" readonly>
-											<span class="form-text text-muted">Total Hutang terhadap Modal</span>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label>Current Ratio</label>
-											<input type="text" class="form-control" name="current_ratio" id="current_ratio" value="10" readonly>
-											<span class="form-text text-muted">Activa Lancar terhadap Hutang Lancar</span>
-										</div>
-									</div> -->
 
 									<label>Hasil Survey</label>
 									<div class="form-row">
@@ -1049,10 +872,6 @@
 					<!-- /.card -->
 				</div>
 			</div>
-			<!-- <div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Understood</button>
-			</div> -->
 		</div>
 	</div>
 </div>

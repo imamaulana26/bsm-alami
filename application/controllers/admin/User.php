@@ -26,9 +26,23 @@ class User extends CI_Controller
 			$data['inputerror'][] = 'nip_user';
 			$data['error'][] = 'NIP user tidak valid, harus numberic';
 			$data['status'] = false;
-		} else if (strlen(input('nip_user')) < 9) {
+		} else if (strlen(input('nip_user')) != 9) {
 			$data['inputerror'][] = 'nip_user';
-			$data['error'][] = 'NIP user tidak boleh kurang dari 8 digit';
+			$data['error'][] = 'NIP user tidak boleh kurang atau lebih dari 9 digit';
+			$data['status'] = false;
+		}
+
+		if (input('kode_ao') == '') {
+			$data['inputerror'][] = 'kode_ao';
+			$data['error'][] = 'Kode AO harus diisi';
+			$data['status'] = false;
+		} else if (!preg_match('/^[0-9]+$/', input('kode_ao'))) {
+			$data['inputerror'][] = 'kode_ao';
+			$data['error'][] = 'Kode AO tidak valid, harus numberic';
+			$data['status'] = false;
+		} else if (strlen(input('kode_ao')) != 8) {
+			$data['inputerror'][] = 'kode_ao';
+			$data['error'][] = 'Kode AO tidak boleh kurang atau lebih dari 8 digit';
 			$data['status'] = false;
 		}
 

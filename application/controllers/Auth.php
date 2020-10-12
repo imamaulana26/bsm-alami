@@ -59,9 +59,11 @@ class Auth extends CI_Controller
 
 						$sess = array(
 							'nip' => $cek['nip'],
+							'kode_ao' => $cek['kode_ao'],
 							'nama' => $cek['nama'],
 							'email' => $cek['email'],
-							'jabatan' => $cek['jabatan']
+							'jabatan' => $cek['jabatan'],
+							'cabang' => $cek['group_unit_kerja']
 						);
 
 						if ($cek['role_id'] == 1) {

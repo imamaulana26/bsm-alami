@@ -34,6 +34,7 @@
 									<tr>
 										<th>#</th>
 										<th>NIP User</th>
+										<th>Kode AO</th>
 										<th>Nama Lengkap</th>
 										<th>Jabatan</th>
 										<th>Group Unit Kerja</th>
@@ -48,6 +49,7 @@
 										<tr>
 											<td><?= $key + 1; ?></td>
 											<td><?= $val['nip']; ?></td>
+											<td><?= $val['kode_ao']; ?></td>
 											<td>
 												<?= $val['nama']; ?><br>
 												<span class="text-primary"><?= $val['email']; ?></span>
@@ -100,6 +102,13 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-md-2 col-form-label">Kode AO</label>
+						<div class="col-md-3">
+							<input type="text" name="kode_ao" id="kode_ao" class="form-control" onkeypress="return CheckNumeric()">
+							<div class="help-block"></div>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-md-2 col-form-label">Nama Lengkap</label>
 						<div class="col-md-6">
 							<input type="text" name="nama_user" id="nama_user" class="form-control">
@@ -141,7 +150,7 @@
 						<div class="form-group row" id="group_unit" style="display: none;">
 							<label class="col-md-2 col-form-label">Group Unit Kerja</label>
 							<div class="col-md-6">
-								<select name="unit_kerja" id="unit_kerja" class="form-control selectpicker"></select>
+								<select name="unit_kerja" id="unit_kerja" class="form-control selectpicker" data-live-search="true"></select>
 								<div class="help-block"></div>
 							</div>
 						</div>
@@ -170,6 +179,12 @@
 		$('#lv_user').css('display', 'block');
 	}
 
+	$(document).ready(function() {
+		jabatan();
+		area();
+		$('.selectpicker').selectpicker('refresh');
+	});
+
 	$(document).on('keydown', 'input', function() {
 		$(this).parents().removeClass('is-invalid');
 		$(this).removeClass('is-invalid');
@@ -177,7 +192,7 @@
 		if ($(this).attr('id') == 'email_user') {
 			$(this).parent().next().empty();
 		} else {
-		$(this).css('text-transform', 'uppercase');
+			$(this).css('text-transform', 'uppercase');
 			$(this).next().empty();
 		}
 	});
@@ -188,58 +203,51 @@
 
 	$('#fm_modal').on('hide.bs.modal', function() {
 		jabatan();
-		outlet();
+		area();
 
 		$('input').parents().removeClass('is-invalid');
 		$('input').removeClass('is-invalid');
 		$('.help-block').empty();
 
-		$('select').selectpicker('refresh');
+		$('.selectpicker').selectpicker('refresh');
 	});
 
-	$(document).ready(function() {
-		jabatan();
-		outlet();
-
-		$('#li_region').on('change', function() {
-			$('#group_unit').css('display', 'flex');
-			$.ajax({
-				url: '<?= site_url('api/get_area/') ?>' + $(this).val(),
-				type: 'post',
-				dataType: 'json',
-				success: function(data) {
-					var html = '<option disabled selected>-- Please Select --</option>';
-					for (var i = 0; i < data.length; i++) {
-						html += '<option value="' + data[i].kd_area + '">' + data[i].nm_area + '</option>';
-					}
-
-					$('#unit_kerja').html(html);
-					$('#unit_kerja').selectpicker('refresh');
+	$('#li_region').on('change', function() {
+		$('#group_unit').css('display', 'flex');
+		$.ajax({
+			url: '<?= site_url('api/get_area/') ?>' + $(this).val(),
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				var html = '<option disabled selected>-- Please Select --</option>';
+				for (var i = 0; i < data.length; i++) {
+					html += '<option value="' + data[i].kd_area + '">' + data[i].nm_area + '</option>';
 				}
-			});
+
+				$('#unit_kerja').html(html);
+				$('.selectpicker').selectpicker('refresh');
+			}
 		});
-
-		// $('input').on('keypress', function() {
-		// 	if ($(this).attr('id') == 'email_user') {
-		// 		$(this).next().next().next().text('');
-		// 	} else {
-		// 		$(this).next().text('');
-		// 	}
-
-		// 	$(this).parent().removeClass('is-invalid');
-		// 	$(this).removeClass('is-invalid');
-		// });
 	});
+
+	// $('input').on('keypress', function() {
+	// 	if ($(this).attr('id') == 'email_user') {
+	// 		$(this).next().next().next().text('');
+	// 	} else {
+	// 		$(this).next().text('');
+	// 	}
+
+	// 	$(this).parent().removeClass('is-invalid');
+	// 	$(this).removeClass('is-invalid');
+	// });
 
 	function fm_modal() {
 		$('#fm_modal').modal('show');
 		$('#fm_user')[0].reset();
 		$('.modal-title').text('Tambah Data User');
-
-		$('select').selectpicker('refresh');
 	}
 
-	function outlet() {
+	function area() {
 		$.ajax({
 			url: '<?= site_url('api/area') ?>',
 			type: 'get',
@@ -251,7 +259,7 @@
 				}
 
 				$('#unit_kerja').html(html);
-				$('select').selectpicker('refresh');
+				$('.selectpicker').selectpicker('refresh');
 			}
 		});
 	}
@@ -267,7 +275,7 @@
 		}
 
 		$('#jbtn_user').html(li);
-		$('select').selectpicker('refresh');
+		$('.selectpicker').selectpicker('refresh');
 	}
 
 	function fm_submit() {
@@ -337,13 +345,13 @@
 
 				$('#nip_user').attr('readonly', true);
 				$('#nip_user').val(data.nip);
+				$('#kode_ao').val(data.kode_ao);
 				$('#nama_user').val(data.nama);
 				$('#email_user').val(mail[0]);
 				$('#jbtn_user').val(data.jabatan);
-				$('#region').val(data.id);
+				$('#li_region').val(data.id_region);
 				$('#unit_kerja').val(data.group_unit_kerja);
-
-				$('select').selectpicker('refresh');
+				$('.selectpicker').selectpicker('refresh');
 			}
 		});
 	}

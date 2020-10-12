@@ -47,6 +47,29 @@
 					</li>
 					<li class="nav-item has-treeview">
 						<a href="" class="nav-link" id="outlet">
+							<i class="nav-icon fas fa-th-large"></i>
+							<p>
+								Module
+								<i class="fas fa-angle-left right"></i>
+							</p>
+						</a>
+						<ul class="nav nav-treeview">
+							<li class="nav-item">
+								<a href="" class="nav-link" id="region">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Pegawai</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a href="" class="nav-link" id="area">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Jaringan Kantor</p>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="nav-item has-treeview">
+						<a href="" class="nav-link" id="outlet">
 							<i class="nav-icon fas fa-building"></i>
 							<p>
 								Daftar Data Outlet
@@ -84,30 +107,40 @@
 							</p>
 						</a>
 						<ul class="nav nav-treeview">
-							<li class="nav-item">
-								<a href="<?= site_url('sales/finance-new') ?>" class="nav-link" id="new">
-									<i class="far fa-circle nav-icon"></i>
-									<p>
-										Daftar Pembiayaan Baru
-										<span class="right badge badge-danger"><?= rand(1, 9) ?></span>
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="<?= site_url('sales/finance-proses') ?>" class="nav-link" id="proses">
-									<i class="far fa-circle nav-icon"></i>
-									<p>
-										Pembiayaan On Progress
-										<span class="right badge badge-danger"><?= rand(1, 9) ?></span>
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="<?= site_url('sales/finance-all') ?>" class="nav-link" id="all">
-									<i class="far fa-circle nav-icon"></i>
-									<p>Daftar Pembiayaan</p>
-								</a>
-							</li>
+							<?php 
+							$finance_new = $this->db->get_where('tbl_list_pembiayaan', ['status' => null])->num_rows();
+							$on_proses = $this->db->get_where('tbl_list_pembiayaan', ['status' => 'On Proses'])->num_rows();
+							if ($this->session->userdata('jabatan') == 'ABBM') : ?>
+								<li class="nav-item">
+									<a href="<?= site_url('sales/finance-new') ?>" class="nav-link" id="new">
+										<i class="far fa-circle nav-icon"></i>
+										<p>
+											Daftar Pembiayaan Baru
+											<?php if($finance_new > 0) : ?>
+											<span class="right badge badge-danger"><?= $finance_new ?></span>
+											<?php endif; ?>
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?= site_url('sales/finance-proses') ?>" class="nav-link" id="proses">
+										<i class="far fa-circle nav-icon"></i>
+										<p>
+											Pembiayaan On Progress
+											<?php if($on_proses > 0) : ?>
+											<span class="right badge badge-danger"><?= $on_proses ?></span>
+											<?php endif; ?>
+										</p>
+									</a>
+								</li>
+							<?php else : ?>
+								<li class="nav-item">
+									<a href="<?= site_url('sales/finance') ?>" class="nav-link" id="all">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Daftar Pembiayaan</p>
+									</a>
+								</li>
+							<?php endif; ?>
 						</ul>
 					</li>
 				<?php endif; ?>

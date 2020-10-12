@@ -35,9 +35,10 @@
 									</tr>
 								</thead>
 								<tbody>
-									<?php foreach ($data as $dt) : ?>
+									<?php $no = 1;
+									foreach ($data as $dt) : ?>
 										<tr>
-											<td>3</td>
+											<td><?= $no++; ?></td>
 											<td><?= $dt['kd_invoice']; ?></td>
 											<td>
 												<?= $dt['nm_perusahaan']; ?>
@@ -49,8 +50,13 @@
 											<td><?= $dt['tenor']; ?> Bulan</td>
 											<td><?= $dt['status']; ?></td>
 											<td class="text-center">
-												<span class="btn btn-xs bg-gradient-info" onclick="detail_modal('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-info-circle"></i></span>
-												<span class="btn btn-xs bg-gradient-warning"><i class="fa fa-fw fa-sm fa-comment-alt"></i></span>
+												<span class="btn btn-xs bg-gradient-info" onclick="detail('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-info-circle"></i></span>
+												<?php if ($dt['status'] == 'Upload history tagihan') : ?>
+													<span class="btn btn-xs bg-gradient-success" onclick="upload('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-upload"></i></span>
+												<?php endif; ?>
+												<?php if ($dt['status'] == 'Perhitungan limit wa`ad') : ?>
+													<span class="btn btn-xs bg-gradient-warning" onclick="limit('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-balance-scale"></i></span>
+												<?php endif; ?>
 											</td>
 										</tr>
 									<?php endforeach; ?>
@@ -83,14 +89,120 @@
 	</div>
 </div>
 
-<?php $this->load->view('sales/detail/v_modal_detail'); ?>
+<div class="modal fade" id="historyModal" data-backdrop="static" data-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<form method="POST" action="<?= site_url('sales/finance/import') ?>" enctype="multipart/form-data">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="upd_modalLabel">Upload daftar riwayat tagihan <i>bouwheer</i></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<label>1. Download file template</label>
+					<p>
+						Download template file daftar riwayat tagihan <i>bouwheer</i>. File ini memiliki kolom header sesuai data yang diperlukan untuk import daftar riwayat tagihan <i>bouwheer</i>.<br>
+						<a href="<?= site_url('sales/finance/template') ?>"><i class="fa fa-fw fa-file-alt"></i> Download File Template</a>
+					</p>
+					<hr>
+					<label>2. Input data template</label>
+					<p>Input data daftar riwayat tagihan <i>bouwheer</i> ke dalam file template yang sudah di download. Pastikan bahwa data daftar riwayat tagihan <i>bouwheer</i> sesuai dengan header kolom yang disediakan dalam template.</p>
+
+					<p class="text-danger">PENTING: Dilarang untuk merubah atau menghapus struktur header kolom yang disediakan dalam template upload. Hal ini dilakukan agar proses import bisa berjalan lancar.</p>
+
+					<hr>
+					<label>3. Import file template</label>
+					<p>Format file yang dapat di import hanya csv / xls / xlsx.</p>
+
+					<input type="hidden" class="form-control" id="invoice_upl" name="invoice_upl">
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label">File Upload</label>
+						<div class="col-md-6">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="upd_file" name="upd_file">
+								<label class="custom-file-label" for="upd_file">Choose file</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Upload</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade" id="perhitunganModal" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title-view">Riwayat Tagihan Kepada <i>Bouwheer</i></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<table class="table table-bordered" id="tbl_perhitungan">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nama Pemberi Kerja</th>
+							<th>Nama Perkerjaan</th>
+							<th>Periode Perkerjaan</th>
+							<th>Avg. Tagihan/bln</th>
+							<th>Periode Tagihan</th>
+							<th>Avg. Tagihan/hari</th>
+							<th>Rekening Tagihan</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<p>Ket : Periode tagihan disesuaikan dengan jangka waktu proyek yang telah dikerjakan.</p>
+
+				<form id="fm_limit" autocomplete="off">
+					<div class="row pt-2">
+						<div class="col-md-12">
+							<h5>Perhitungan Limit Wa`ad</h5>
+						</div>
+						<div class="col-md-5">
+							<input type="hidden" class="form-control" name="invoice" id="invoice">
+							<input type="hidden" class="form-control" name="max_limit" id="max_limit">
+							<table class="table" id="tbl_waad"></table>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php $this->load->view('sales/detail/modal_finance'); ?>
 <?php $this->load->view('layout/footer'); ?>
 <?php $this->load->view('layout/script'); ?>
 
 <script>
 	$(document).ready(function() {
-		var key = '',
-			file = '';
+		let msg_err = '<?= $this->session->flashdata('upd_err') ?>';
+		let msg_upl = '<?= $this->session->flashdata('upd_msg') ?>';
+
+		if (msg_upl != '') {
+			Swal.fire({
+				title: 'Upload Sukses',
+				icon: 'success',
+				text: msg_upl
+			});
+		}
+
+		if (msg_err != '') {
+			Swal.fire({
+				title: 'Upload Gagal',
+				icon: 'warning',
+				text: msg_err
+			});
+		}
 	});
 
 	$('#exampleModal').on('hidden.bs.modal', function() {
@@ -140,7 +252,55 @@
 		}
 	});
 
-	function detail_modal(key) {
+	$('input[type="file"]').change(function(e) {
+		var fileName = e.target.files[0].name;
+		$('.custom-file-label').html(fileName);
+	});
+
+	$('#fm_limit').on('submit', function(evt) {
+		evt.preventDefault();
+
+		let maks = $('#max_limit').val();
+		let maks_waad = $('#maks_waad').val();
+
+		if (maks_waad > maks) {
+			Swal.fire({
+				title: 'Oops!',
+				icon: 'warning',
+				text: 'Usulan wa`ad tidak boleh melebihi maks. limit wa`ad.'
+			});
+		} else {
+			$.ajax({
+				url: '<?= site_url('sales/finance/submit_waad') ?>',
+				type: 'post',
+				dataType: 'json',
+				data: {
+					'kd_invoice': $('#invoice').val(),
+					'max_limit': maks,
+					'max_waad': maks_waad
+				},
+				success: function(respon) {
+					Swal.fire({
+						title: 'Sukses',
+						icon: 'success',
+						text: 'Usulan wa`ad telah berhasil disimpan',
+						timer: 2000,
+						timerProgressBar: true,
+						// onBeforeOpen: () => {
+						// 	Swal.showLoading()
+						// },
+						showConfirmButton: false
+					}).then((result) => {
+						if (result.dismiss === Swal.DismissReason.timer) {
+							location.reload();
+						}
+					})
+				}
+			});
+		}
+	});
+
+	function detail(key) {
 		$('#detail_modal').modal('show');
 		$('.modal-title-detail').text('Detail Form Pengajuan Pembiayaan');
 
@@ -148,7 +308,7 @@
 		$('.tab-pane').first().addClass('show active');
 
 		$.ajax({
-			url: '<?= site_url('sales/finance_all/detail/') ?>' + key,
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
 			type: 'get',
 			dataType: 'json',
 			success: function(res) {
@@ -165,6 +325,7 @@
 				let dokumen = res.dokumen;
 				let survey = res.survey;
 				let analisa = res.analisa;
+				let history = res.history;
 
 				// fm_pic
 				$('#id_penerima').val(pic.dokumen_pic);
@@ -480,8 +641,77 @@
 
 					$(':radio:not(:checked)').attr('disabled', true);
 					$('.btn-primary').css('display', 'none');
+
+					if (pembiayaan.status == 'Proses Komite') {
+						var test = `<li class="nav-item">
+							<a class="nav-link detail-menu-tab" id="history-tab" data-toggle="pill" href="#tab-history" role="tab" aria-controls="tab-history" aria-selected="false"><i class="fa fa-history mr-1"></i> History Penagihan</a>
+						</li>`;
+
+						$(test).insertAfter($('.nav-item').last());
+						var content = '',
+							tbl_content = '',
+							avg_bln = 0,
+							avg_hari = 0;
+						for (let i = 0; i < history.length; i++) {
+							avg_bln += history[i].avg_tagihan_bln / history.length;
+							avg_hari += history[i].avg_tagihan_hari / history.length;
+
+							content += '<tr>';
+							content += '<td>' + (i + 1) + '</td>';
+							content += '<td>' + history[i].nm_pemberi_kerja + '</td>';
+							content += '<td>' + history[i].nm_pekerjaan + '</td>';
+							content += '<td>' + history[i].periode_pekerjaan + '</td>';
+							content += '<td>' + formatRp(history[i].avg_tagihan_bln) + '</td>';
+							content += '<td>' + history[i].periode_tagihan + '</td>';
+							content += '<td>' + formatRp(history[i].avg_tagihan_hari) + '</td>';
+							content += '<td>' + history[i].rek_tagihan + '</td>';
+							content += '</tr>';
+						}
+
+						tbl_content += '<tr><th>Rata-rata Tagihan per bulan</th><td>' + formatRp(avg_bln) + '</td></tr>';
+						tbl_content += '<tr><th>Rata-rata Hari Tagihan</th><td>' + formatRp((avg_hari / 30).toFixed(2)) + '</td></tr>';
+						tbl_content += '<tr><th>Maksimal Limit Wa`ad</th><th>' + formatRp(avg_bln * (avg_hari / 30)) + '</th></tr>';
+						tbl_content += '<tr style="background-color: #e4e4e4"><th>Usulan Wa`ad</th><th>' + formatRp(pembiayaan.usulan_waad) + '</th></tr>';
+
+						$('#tab-history tbody').html(content);
+						$('#tab-history #tbl_waad').html(tbl_content);
+
+					} else {
+						$('#history-tab').remove();
+					}
 				}
 			}
 		});
+	}
+
+	function upload(id) {
+		$('#historyModal').modal('show');
+		$('#invoice_upl').val(id);
+	}
+
+	function limit(id) {
+		$('#perhitunganModal').modal('show');
+		$('#invoice').val(id);
+		$.ajax({
+			url: '<?= site_url('sales/finance/history_tagihan/') ?>' + id,
+			type: 'post',
+			dataType: 'json',
+			success: function(respon) {
+				let tagihan = '';
+				let limit = '';
+
+				for (let i = 0; i < respon.tagihan.length; i++) {
+					tagihan += respon.tagihan[i];
+				}
+				$('#tbl_perhitungan tbody').html(tagihan);
+
+				$('#max_limit').val(respon.limit[0]);
+				for (let i = 1; i < respon.limit.length; i++) {
+					limit += respon.limit[i];
+				}
+				$('#tbl_waad').html(limit);
+			}
+		});
+		// $('#invoice_upl').val(id);
 	}
 </script>
