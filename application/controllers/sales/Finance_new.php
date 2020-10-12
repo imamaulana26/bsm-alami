@@ -22,12 +22,36 @@ class Finance_new extends CI_Controller
 
 		$marketing = $this->db->get_where('tbl_user', ['group_unit_kerja' => $this->session->userdata('cabang'), 'jabatan' => 'BBRM'])->result_array();
 
-		$pembiayaan = $this->db->get_where('tbl_list_pembiayaan', ['kd_invoice' => $key, 'status' => null])->row_array();
+		$pembiayaan = $this->db->get_where('tbl_list_pembiayaan', ['kd_invoice' => $key])->row_array();
+		$pic = $this->db->get_where('tbl_pic', ['fk_kd_invoice' => $key])->row_array();
 		$perusahaan = $this->db->select('*')->from('tbl_profile_perusahaan a')->join('tbl_info_bank_perusahaan b', 'a.kd_perusahaan = b.fk_kd_perusahaan', 'left')->where(['a.kd_perusahaan' => $pembiayaan['fk_kd_perusahaan']])->get()->row_array();
+
+		$pengurus = $this->db->get_where('tbl_profile_pengurus', ['fk_kd_perusahaan' => $perusahaan['kd_perusahaan']])->result_array();
+		$pemegang_saham = $this->db->get_where('tbl_pemegang_saham', ['fk_kd_perusahaan' => $perusahaan['kd_perusahaan']])->result_array();
+		$portofolio = $this->db->get_where('tbl_portofolio_bisnis', ['fk_kd_invoice' => $key])->result_array();
+		$keuangan = $this->db->get_where('tbl_lap_keuangan', ['fk_kd_invoice' => $key])->result_array();
+
+		$agunan_tagihan = $this->db->get_where('tbl_ag_tagihan', ['fk_kd_invoice' => $key])->row_array();
+		$tagihan = $this->db->get_where('tbl_tagihan', ['fk_id_tagihan' => $agunan_tagihan['id_tagihan']])->result_array();
+		$jaminan = $this->db->get_where('tbl_ag_jaminan', ['fk_kd_invoice' => $key])->row_array();
+		$dokumen = $this->db->get_where('tbl_dokumen', ['fk_kd_invoice' => $key])->row_array();
+		$survey = $this->db->get_where('tbl_survey', ['fk_kd_invoice' => $key])->row_array();
+		$analisa = $this->db->get_where('tbl_analisa', ['fk_kd_invoice' => $key])->row_array();
 
 		$data['marketing'] = $marketing;
 		$data['pembiayaan'] = $pembiayaan;
+		$data['pic'] = $pic;
 		$data['perusahaan'] = $perusahaan;
+		$data['pengurus'] = $pengurus;
+		$data['portofolio'] = $portofolio;
+		$data['keuangan'] = $keuangan;
+		$data['pemegang_saham'] = $pemegang_saham;
+		$data['ag_tagihan'] = $agunan_tagihan;
+		$data['tagihan'] = $tagihan;
+		$data['jaminan'] = $jaminan;
+		$data['dokumen'] = $dokumen;
+		$data['survey'] = $survey;
+		$data['analisa'] = $analisa;
 
 		echo json_encode($data);
 		exit;

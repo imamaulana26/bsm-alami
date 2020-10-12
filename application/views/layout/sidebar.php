@@ -109,7 +109,7 @@
 						<ul class="nav nav-treeview">
 							<?php 
 							$finance_new = $this->db->get_where('tbl_list_pembiayaan', ['status' => null])->num_rows();
-							$on_proses = $this->db->get_where('tbl_list_pembiayaan', ['status' => 'On Proses'])->num_rows();
+							$on_proses = $this->db->get_where('tbl_list_pembiayaan', ['status !=' => 'Pencairan Berhasil'])->num_rows();
 							if ($this->session->userdata('jabatan') == 'ABBM') : ?>
 								<li class="nav-item">
 									<a href="<?= site_url('sales/finance-new') ?>" class="nav-link" id="new">
