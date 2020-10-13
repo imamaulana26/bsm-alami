@@ -82,7 +82,7 @@
 										<th class="text-center">Nominal Tagihan</th>
 									</tr>
 								</thead>
-								<tbody>
+								<!-- <tbody>
 									<?php $no = 1;
 									foreach ($data as $dt) :
 										$db_tgl = date_create($dt['tgl_jatem']);
@@ -110,7 +110,7 @@
 											</tr>
 									<?php endif;
 									endforeach; ?>
-								</tbody>
+								</tbody> -->
 							</table>
 						</div>
 					</div>

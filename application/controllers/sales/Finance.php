@@ -41,8 +41,8 @@ class Finance extends CI_Controller
 			'trade_seller_1' => input('td_1_seller'),
 			'trade_seller_2' => input('td_2_seller'),
 			'sektor_seller' => input('sektor_seller'),
-			'pengalaman_seller_1' => input('pengalama_1_seller'),
-			'pengalaman_seller_2' => input('pengalama_2_seller'),
+			'pengalaman_seller_1' => input('pengalaman_1_seller'),
+			'pengalaman_seller_2' => input('pengalaman_2_seller'),
 			'pembayaran_seller' => input('pembayaran_seller')
 		);
 
@@ -50,7 +50,7 @@ class Finance extends CI_Controller
 		if (array_sum($data) < 16) {
 			$this->db->update('tbl_list_pembiayaan', ['status' => 'RAC tidak terpenuhi'], ['kd_invoice' => input('kd_invoice')]);
 		} else {
-			$this->db->update('tbl_list_pembiayaan', ['status' => 'Upload hisory tagihan'], ['kd_invoice' => input('kd_invoice')]);
+			$this->db->update('tbl_list_pembiayaan', ['status' => 'Upload history tagihan'], ['kd_invoice' => input('kd_invoice')]);
 		}
 		redirect(site_url('sales/finance'));
 	}
