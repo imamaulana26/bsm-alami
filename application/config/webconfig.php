@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-$ver = "envi"; // envi or prod or maintenance
+$ver = "prod"; // envi or prod or maintenance
 
 switch ($ver) {
 	case "maintenance":
