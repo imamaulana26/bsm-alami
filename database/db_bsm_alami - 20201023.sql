@@ -21,6 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_bsm_alami`
 --
+drop database `u6020540_db_alami`;
+create database `u6020540_db_alami`;
+use `u6020540_db_alami`;
 
 -- --------------------------------------------------------
 
