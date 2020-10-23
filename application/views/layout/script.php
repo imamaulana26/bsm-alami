@@ -121,6 +121,11 @@
 		return exp[2] + ' ' + bln[exp[1] - 1] + ' ' + exp[0];
 	}
 
+	function roundUp(num, precision) {
+		precision = Math.pow(10, precision)
+		return Math.ceil(num * precision) / precision
+	}
+
 	$('#dataTable').DataTable({
 		'paging': true,
 		'lengthChange': true,

@@ -30,6 +30,19 @@
 							<li class="nav-item">
 								<a class="nav-link detail-menu-tab" id="analisa-tab" data-toggle="pill" href="#tab-analisa" role="tab" aria-controls="tab-analisa" aria-selected="false"><i class="fa fa-check-square mr-1"></i> Checklist RAC</a>
 							</li>
+
+							<li class="nav-item">
+								<a class="nav-link detail-menu-tab" id="history-tab" data-toggle="pill" href="#tab-history" role="tab" aria-controls="tab-history" aria-selected="false" style="display: none;"><i class="fa fa-history mr-1"></i> History Penagihan</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link detail-menu-tab" id="agunan-tab" data-toggle="pill" href="#tab-agunan" role="tab" aria-controls="tab-agunan" aria-selected="false" style="display: none;">Analisa Aspek Agunan</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link detail-menu-tab" id="usulan-tab" data-toggle="pill" href="#tab-usulan" role="tab" aria-controls="tab-usulan" aria-selected="false" style="display: none;">Usulan & Analisa Pembiayaan</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link detail-menu-tab" id="syarat-tab" data-toggle="pill" href="#tab-syarat" role="tab" aria-controls="tab-syarat" aria-selected="false" style="display: none;">Syarat Pembiayaan</a>
+							</li>
 						</ul>
 					</div>
 					<div class="card-body">
@@ -847,7 +860,7 @@
 											</tr>
 										</tbody>
 									</table>
-									<button type="submit" class="btn btn-primary float-right">Simpan</button>
+									<button type="submit" class="btn btn-primary btn_analisa float-right">Simpan</button>
 								</form>
 							</div>
 
@@ -861,7 +874,7 @@
 											<th>Periode Perkerjaan</th>
 											<th>Avg. Tagihan/bln</th>
 											<th>Periode Tagihan</th>
-											<th>Avg. Tagihan/hari</th>
+											<th>Avg. Hari Tagihan</th>
 											<th>Rekening Tagihan</th>
 										</tr>
 									</thead>
@@ -877,6 +890,39 @@
 										<table class="table" id="tbl_waad"></table>
 									</div>
 								</div>
+							</div>
+
+							<div class="tab-pane fade" id="tab-agunan" role="tabpanel" aria-labelledby="agunan-tab">
+								<div class="row">
+									<div class="col-md-8">
+										<table class="table table-bordered" id="tbl_agunan">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>Data Agunan</th>
+													<th style="width: 200px;">Nilai Pasar</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<table class="table" id="tbl_analisa_agn"></table>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="tab-usulan" role="tabpanel" aria-labelledby="usulan-tab">
+								<div class="row">
+									<div class="col-md-10">
+										<table class="table" id="tbl_usulan"></table>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="tab-syarat" role="tabpanel" aria-labelledby="syarat-tab">
 							</div>
 						</div>
 					</div>

@@ -81,6 +81,35 @@ class Finance extends CI_Controller
 			$data['history'] = $history;
 		}
 
+		$cek_agunan = $this->db->get_where('tbl_agunan', ['fk_kd_invoice' => $key])->num_rows();
+		if($cek_agunan > 0){
+			$data['agunan'] = $this->db->get_where('tbl_agunan', ['fk_kd_invoice' => $key])->result_array();
+		}
+
+		$cek_analisa_agn = $this->db->get_where('tbl_analisa_agunan', ['fk_kd_invoice' => $key])->num_rows();
+		if($cek_analisa_agn > 0){
+			$data['analisa_agn'] = $this->db->get_where('tbl_analisa_agunan', ['fk_kd_invoice' => $key])->row_array();
+		}
+		
+		$cek_usulan = $this->db->get_where('tbl_usulan', ['fk_kd_invoice' => $key])->num_rows();
+		if($cek_usulan > 0){
+			$usulan = $this->db->get_where('tbl_usulan', ['fk_kd_invoice' => $key])->row_array();
+			$data['usulan'] = $usulan;
+			$data['biaya_lain'] = unserialize($usulan['biaya_lain']);
+		}
+
+		$cek_syarat = $this->db->get_where('tbl_syarat', ['fk_kd_invoice' => $key])->num_rows();
+		if($cek_syarat > 0){
+			$syarat = $this->db->get_where('tbl_syarat', ['fk_kd_invoice' => $key])->row_array();
+
+			$row = array();
+			$row['akad'] = unserialize($syarat['syarat_akad']);
+			$row['cair'] = unserialize($syarat['syarat_cair']);
+			$row['lain'] = unserialize($syarat['syarat_lain']);
+
+			$data['syarat'] = $row;
+		}
+
 		$data['pembiayaan'] = $pembiayaan;
 		$data['pic'] = $pic;
 		$data['perusahaan'] = $perusahaan;
@@ -113,7 +142,7 @@ class Finance extends CI_Controller
 			$row = array();
 
 			$avg_bln += $dt['avg_tagihan_bln'] / count($data);
-			$avg_hari += $dt['avg_tagihan_hari'] / count($data);
+			$avg_hari += $dt['avg_tagihan_hari'] / count($data) / 30;
 
 			$row[] = '<tr>';
 			$row[] = '<td>' . ($key + 1) . '</td>';
@@ -122,17 +151,17 @@ class Finance extends CI_Controller
 			$row[] = '<td>' . $dt['periode_pekerjaan'] . '</td>';
 			$row[] = '<td>Rp. ' . number_format($dt['avg_tagihan_bln'], 2, ',', '.') . '</td>';
 			$row[] = '<td>' . $dt['periode_tagihan'] . '</td>';
-			$row[] = '<td>Rp. ' . number_format($dt['avg_tagihan_hari'], 2, ',', '.') . '</td>';
+			$row[] = '<td>' . $dt['avg_tagihan_hari'] . ' Hari</td>';
 			$row[] = '<td>' . $dt['rek_tagihan'] . '</td>';
 			$row[] = '</tr>';
 
 			$tagihan[] = $row;
 		}
 
-		$limit[] = $avg_bln * ($avg_hari / 30);
+		$limit[] = $avg_bln * ceil($avg_hari);
 		$limit[] = '<tr><th>Rata-rata Tagihan per bulan</th><td>Rp. ' . number_format($avg_bln, 2, ',', '.') . '</td></tr>';
-		$limit[] = '<tr><th>Rata-rata Hari Tagihan</th><td>Rp. ' . number_format($avg_hari / 30, 2, ',', '.') . '</td></tr>';
-		$limit[] = '<tr><th>Maksimal Limit Wa`ad</th><td>Rp. ' . number_format(($avg_bln * ($avg_hari / 30)), 2, ',', '.') . '</td></tr>';
+		$limit[] = '<tr><th>Rata-rata Hari Tagihan</th><td>' . ceil($avg_hari) . ' Hari</td></tr>';
+		$limit[] = '<tr><th>Maksimal Limit Wa`ad</th><td>Rp. ' . number_format($avg_bln * ceil($avg_hari), 2, ',', '.') . '</td></tr>';
 		$limit[] = '<tr><th>Usulan Wa`ad</th><td><input type="text" class="form-control" id="maks_waad" name="maks_waad" autofocus onkeypress="return CheckNumeric()"></td></tr>';
 		$limit[] = '<tr><th>&nbsp;</th><td><button type="submit" class="btn btn-primary">Submit</button></td></tr>';
 
@@ -145,8 +174,142 @@ class Finance extends CI_Controller
 
 	public function submit_waad()
 	{
-		$this->db->update('tbl_list_pembiayaan', ['status' => 'Proses Komite', 'usulan_waad' => input('max_waad')], ['kd_invoice' => input('kd_invoice')]);
+		$this->db->update('tbl_list_pembiayaan', ['status' => 'Analisa aspek agunan', 'usulan_waad' => input('max_waad')], ['kd_invoice' => input('kd_invoice')]);
 		echo json_encode(['status' => true]);
+		exit;
+	}
+
+	public function proses_analisa()
+	{
+		$data = array();
+		$arr = array();
+
+		$agunan = $this->input->post('data_agunan');
+		$nilai = $this->input->post('nilai_pasar');
+
+		foreach ($agunan as $key => $val) {
+			$row = array();
+
+			$row['nama_agunan'] = $val;
+			$row['nilai_pasar'] = $nilai[$key];
+
+			$arr[] = $row;
+		}
+
+		$data['agunan'] = $arr;
+
+		$analisa = array(
+			'fk_kd_invoice' => input('kd_invoice'),
+			'total_agunan' => (int) filter_var(input('sum_agunan'), FILTER_SANITIZE_NUMBER_INT),
+			'os_eksisting' => (int) filter_var(input('os_eksisting'), FILTER_SANITIZE_NUMBER_INT),
+			'tambahan_pembiayaan' => (int) filter_var(input('tambah_pembiayaan'), FILTER_SANITIZE_NUMBER_INT),
+			'total_exposure' => (int) filter_var(input('sum_exposure'), FILTER_SANITIZE_NUMBER_INT),
+			'fixed_asset' => str_replace(' %', '', input('fixed_asset'))
+		);
+
+		$this->db->trans_start();
+		for ($i = 0; $i < count($data['agunan']); $i++) {
+			$this->db->insert(
+				'tbl_agunan',
+				array(
+					'fk_kd_invoice' => input('kd_invoice'),
+					'data_agunan' => $data['agunan'][$i]['nama_agunan'],
+					'nilai_pasar' => $data['agunan'][$i]['nilai_pasar']
+				)
+			);
+		}
+
+		$this->db->insert('tbl_analisa_agunan', $analisa);
+
+		$this->db->update('tbl_list_pembiayaan', ['status' => 'Proses usulan pembiayaan'], ['kd_invoice' => input('kd_invoice')]);
+		$this->db->trans_complete();
+
+		if ($this->db->trans_status() === FALSE) {
+			$msg = array(
+				'status' => false,
+				'msg' => array(
+					'title' => 'Kesalahan!',
+					'icon' => 'warning',
+					'text' => 'Analisa aspek agunan gagal disimpan.'
+				)
+			);
+			$this->session->set_flashdata('msg_agunan', $msg);
+			redirect(site_url('sales/finance'));
+		} else {
+			$msg = array(
+				'status' => true,
+				'msg' => array(
+					'title' => 'Berhasil!',
+					'icon' => 'success',
+					'text' => 'Analisa aspek agunan telah berhasil disimpan.'
+				)
+			);
+			$this->session->set_flashdata('msg_agunan', $msg);
+			redirect(site_url('sales/finance'));
+		}
+	}
+
+	public function proses_usulan()
+	{
+		$data = array();
+		$arr = array();
+
+		for ($i = 0; $i < count($_POST['nm_biaya']); $i++) {
+			$row = array();
+
+			$row['nama'] = $_POST['nm_biaya'][$i];
+			$row['nominal'] = $_POST['nom_biaya'][$i];
+
+			$arr[] = $row;
+		}
+
+		$data['fk_kd_invoice'] = input('kd_invoice');
+		$data['skim_pembiayaan'] = input('skim');
+		$data['sifat_pembiayaan'] = input('sifat_pembiayaan');
+		$data['tujuan_pembiayaan'] = input('tujuan_pembiayaan');
+		$data['nom_ujrah'] = input('ujrah_pembiayaan');
+		$data['tenor_waad'] = input('tenor_waad');
+		$data['jk_penarikan'] = input('jk_penarikan');
+		$data['cara_pencairan'] = input('cara_penarikan');
+		$data['sumber_pelunasan'] = input('sumber_dana');
+		$data['biaya_admin'] = input('biaya_admin');
+		$data['biaya_penjamin'] = input('biaya_asuransi');
+		$data['biaya_lain'] = serialize($arr);
+
+		$this->db->insert('tbl_usulan', $data);
+		$this->db->update('tbl_list_pembiayaan', ['status' => 'Input syarat pembiayaan'], ['kd_invoice' => input('kd_invoice')]);
+
+		echo json_encode(['status' => true, 'msg' => 'Analisa & usulan pembiayaan berhasil disimpan']);
+		exit;
+	}
+
+	public function proses_syarat()
+	{
+		$data = array();
+		$akad = array();
+		$cair = array();
+		$lain = array();
+
+		$data['fk_kd_invoice'] = input('kd_invoice');
+		for ($i = 0; $i < count($_POST['syarat_akad']); $i++) {
+			$akad[] = $_POST['syarat_akad'][$i];
+		}
+		$data['syarat_akad'] = serialize($akad);
+
+		for ($i = 0; $i < count($_POST['syarat_cair']); $i++) {
+			$cair[] = $_POST['syarat_cair'][$i];
+		}
+		$data['syarat_cair'] = serialize($cair);
+		
+		for ($i = 0; $i < count($_POST['syarat_lain']); $i++) {
+			$lain[] = $_POST['syarat_lain'][$i];
+		}
+		$data['syarat_lain'] = serialize($lain);
+
+		$this->db->insert('tbl_syarat', $data);
+		$this->db->update('tbl_list_pembiayaan', ['status' => 'Proses komite'], ['kd_invoice' => input('kd_invoice')]);
+
+		echo json_encode(['status' => true, 'msg' => 'Syarat pembiayaan berhasil disimpan']);
 		exit;
 	}
 
@@ -169,14 +332,15 @@ class Finance extends CI_Controller
 		$sheet->setCellValue('C2', 'Jan-19 s/d Des-19');
 		$sheet->setCellValue('D2', '5000000');
 		$sheet->setCellValue('E2', 'Jan-19 s/d Des-19');
-		$sheet->setCellValue('F2', '2500000');
+		$sheet->setCellValue('F2', '15');
 		$sheet->setCellValue('G2', '7121001239');
+
 		$sheet->setCellValue('A3', 'PT Jalan Raya');
 		$sheet->setCellValue('B3', 'Penambahan Sparator Busway');
 		$sheet->setCellValue('C3', 'Jan-19 s/d Des-19');
 		$sheet->setCellValue('D3', '5000000');
 		$sheet->setCellValue('E3', 'Jan-19 s/d Des-19');
-		$sheet->setCellValue('F3', '2500000');
+		$sheet->setCellValue('F3', '10');
 		$sheet->setCellValue('G3', '7121001239');
 
 		$writer = new Xlsx($spreadsheet);

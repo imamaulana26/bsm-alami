@@ -48,15 +48,31 @@
 											<td class="text-center"><?= tgl_indo($dt['tgl_pengajuan']); ?></td>
 											<td>Rp <?= number_format($dt['nom_pengajuan'], 2, ',', '.') ?></td>
 											<td><?= $dt['tenor']; ?> Bulan</td>
-											<td><?= $dt['status']; ?></td>
-											<td class="text-center">
-												<span class="btn btn-xs bg-gradient-info" onclick="detail('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-info-circle"></i></span>
+											<td>
+												<?php if ($dt['status'] == 'Proses RAC') : ?>
+													<?= $dt['status']; ?>
+												<?php endif; ?>
 												<?php if ($dt['status'] == 'Upload history tagihan') : ?>
-													<span class="btn btn-xs bg-gradient-success" onclick="upload('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-upload"></i></span>
+													<span onclick="upload('<?= $dt['kd_invoice'] ?>')" style="color: #17A2BB; cursor: pointer;"><?= $dt['status']; ?></span>
 												<?php endif; ?>
 												<?php if ($dt['status'] == 'Perhitungan limit wa`ad') : ?>
-													<span class="btn btn-xs bg-gradient-warning" onclick="limit('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-balance-scale"></i></span>
+													<span onclick="limit('<?= $dt['kd_invoice'] ?>')" style="color: #17A2BB; cursor: pointer;"><?= $dt['status']; ?></span>
 												<?php endif; ?>
+												<?php if ($dt['status'] == 'Analisa aspek agunan') : ?>
+													<span onclick="agunan('<?= $dt['kd_invoice'] ?>')" style="color: #17A2BB; cursor: pointer;"><?= $dt['status']; ?></span>
+												<?php endif; ?>
+												<?php if ($dt['status'] == 'Proses usulan pembiayaan') : ?>
+													<span onclick="usulan('<?= $dt['kd_invoice'] ?>')" style="color: #17A2BB; cursor: pointer;"><?= $dt['status']; ?></span>
+												<?php endif; ?>
+												<?php if ($dt['status'] == 'Input syarat pembiayaan') : ?>
+													<span onclick="syarat('<?= $dt['kd_invoice'] ?>')" style="color: #17A2BB; cursor: pointer;"><?= $dt['status']; ?></span>
+												<?php endif; ?>
+												<?php if ($dt['status'] == 'Proses komite') : ?>
+													<?= $dt['status']; ?>
+												<?php endif; ?>
+											</td>
+											<td class="text-center">
+												<span class="btn btn-xs bg-gradient-info" onclick="detail('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-info-circle"></i></span>
 											</td>
 										</tr>
 									<?php endforeach; ?>
@@ -154,7 +170,7 @@
 							<th>Periode Perkerjaan</th>
 							<th>Avg. Tagihan/bln</th>
 							<th>Periode Tagihan</th>
-							<th>Avg. Tagihan/hari</th>
+							<th>Avg. Hari Tagihan</th>
 							<th>Rekening Tagihan</th>
 						</tr>
 					</thead>
@@ -178,6 +194,222 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="agunanModal" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Form Analisa Aspek Agunan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form method="POST" action="<?= site_url('sales/finance/proses_analisa') ?>" autocomplete="off">
+					<input type="hidden" name="kd_invoice" id="kd_invoice">
+					<div class="row">
+						<div class="col-md-6">
+							<label>Data Agunan</label>
+						</div>
+						<div class="col-md-6">
+							<label>Nilai Pasar</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="data_agunan" name="data_agunan[]">
+						</div>
+						<div class="col-md-3">
+							<input type="text" class="form-control" id="nilai_pasar" name="nilai_pasar[]" onkeypress="return CheckNumeric()">
+						</div>
+						<div class="col-md-1">
+							<span class="btn btn-default btn_add"><i class="fa fa-fw fa-plus"></i></span>
+						</div>
+					</div>
+					<div class="clone"></div>
+
+					<div class="row mt-3">
+						<div class="col-md-5">
+							<table class="table">
+								<tr>
+									<th>Total Nilai Agunan</th>
+									<td>
+										<input type="text" class="form-control" id="sum_agunan" name="sum_agunan" readonly>
+									</td>
+								</tr>
+								<tr>
+									<th>OS Pembiayaan Existing</th>
+									<td>
+										<input type="text" class="form-control" id="os_eksisting" name="os_eksisting" onkeypress="return CheckNumeric()">
+									</td>
+								</tr>
+								<tr>
+									<th>Tambahan Pembiayaan</th>
+									<td>
+										<input type="text" class="form-control" id="tambah_pembiayaan" name="tambah_pembiayaan" onkeypress="return CheckNumeric()">
+									</td>
+								</tr>
+								<tr>
+									<th>Total Exposure</th>
+									<td>
+										<input type="text" class="form-control" id="sum_exposure" name="sum_exposure" readonly>
+									</td>
+								</tr>
+								<tr>
+									<th>CC Agunan Fixed Asset</th>
+									<td>
+										<input type="text" class="form-control" id="fixed_asset" name="fixed_asset" readonly>
+									</td>
+								</tr>
+							</table>
+							<div class="offset-5">
+								<button type="submit" class="btn btn-primary" style="margin-left: 20px;">Simpan</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="usulanModal" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Form Analisa & Usulan Pembiayaan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="fm_usulan">
+					<input type="hidden" name="kd_invoice" id="kd_invoice" class="form-control">
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Skim Pembiayaan</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="skim" name="skim" value="Qardh Wakalah bil Ujrah" readonly>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Sifat Pembiayaan</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="sifat_pembiayaan" name="sifat_pembiayaan" value="Non Revolving" readonly>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Tujuan Pembiayaan</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="tujuan_pembiayaan" name="tujuan_pembiayaan" value="Invoice Financing" readonly>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Ujrah Pembiayaan</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="ujrah_pembiayaan" name="ujrah_pembiayaan" onkeypress="return CheckNumeric()">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Jangka Waktu Wa'ad</label>
+						<div class="col-sm-1">
+							<input type="text" class="form-control" id="tenor_waad" name="tenor_waad" onkeypress="return CheckNumeric()">
+						</div>
+						<label class="col-sm-2 col-form-label">Bulan</label>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Jangka Waktu per Penarikan</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="jk_penarikan" name="jk_penarikan" value="Tidak melebihi jangka waktu wa`ad" readonly>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Cara Pencairan</label>
+						<div class="col-sm-4">
+							<textarea name="cara_penarikan" class="form-control" id="cara_penarikan" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Sumber dan Cara Pelunasan</label>
+						<div class="col-sm-4">
+							<textarea name="sumber_dana" class="form-control" id="sumber_dana" rows="3"></textarea>
+						</div>
+					</div>
+					<label class="control-label">Biaya-biaya</label>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">a. Biaya Administrasi</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="biaya_admin" name="biaya_admin" onkeypress="return CheckNumeric()">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">b. Biaya Asuransi Penjaminan</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="biaya_asuransi" name="biaya_asuransi" onkeypress="return CheckNumeric()">
+						</div>
+					</div>
+					<label class="control-label">c. Biaya Lain-lain <span class="btn btn-xs btn-default plus"><i class="fa fa-fw fa-plus"></i></span></label>
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="nm_biaya" name="nm_biaya[]" placeholder="nama biaya">
+						</div>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="nom_biaya" name="nom_biaya[]" placeholder="nominal" onkeypress="return CheckNumeric()">
+						</div>
+					</div>
+					<div class="clone_biaya"></div>
+
+					<div class="form-group row">
+						<div class="col-sm-10">
+							<button type="submit" class="btn btn-primary">Simpan</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="syaratModal" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Form Syarat Pembiayaan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="fm_syarat">
+					<input type="hidden" name="kd_invoice" id="kd_invoice" class="form-control">
+					<div class="form-row">
+						<div class="form-group col-md-8">
+							<label>Syarat Penandatanganan Akad Pembiayaan <span class="ml-1 btn btn-xs btn-default btn_akad"><i class="fa fa-fw fa-plus"></i></span></label>
+							<textarea name="syarat_akad[]" id="syarat_akad" class="form-control" rows="2"></textarea>
+						</div>
+					</div>
+					<div class="clone_syarat_akad"></div>
+					<div class="form-row">
+						<div class="form-group col-md-8">
+							<label>Syarat Pencairan Pembiayaan <span class="ml-1 btn btn-xs btn-default btn_cair"><i class="fa fa-fw fa-plus"></i></span></label>
+							<textarea name="syarat_cair[]" id="syarat_cair" class="form-control" rows="2"></textarea>
+						</div>
+					</div>
+					<div class="clone_syarat_cair"></div>
+					<div class="form-row">
+						<div class="form-group col-md-8">
+							<label>Syarat Lain-lain <span class="ml-1 btn btn-xs btn-default btn_lain"><i class="fa fa-fw fa-plus"></i></span></label>
+							<textarea name="syarat_lain[]" id="syarat_lain" class="form-control" rows="2"></textarea>
+						</div>
+					</div>
+					<div class="clone_syarat_lain"></div>
+					<button type="submit" class="btn btn-primary">Simpan</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 <?php $this->load->view('sales/detail/modal_finance'); ?>
 <?php $this->load->view('layout/footer'); ?>
@@ -203,6 +435,14 @@
 				text: msg_err
 			});
 		}
+
+		<?php if (isset($_SESSION['msg_agunan'])) : ?>
+			Swal.fire({
+				title: '<?= $_SESSION['msg_agunan']['msg']['title'] ?>',
+				icon: '<?= $_SESSION['msg_agunan']['msg']['icon'] ?>',
+				text: '<?= $_SESSION['msg_agunan']['msg']['text'] ?>'
+			});
+		<?php endif; ?>
 	});
 
 	$('#exampleModal').on('hidden.bs.modal', function() {
@@ -263,6 +503,9 @@
 		let maks = $('#max_limit').val();
 		let maks_waad = $('#maks_waad').val();
 
+		console.log(maks);
+		console.log(maks_waad);
+
 		if (maks_waad > maks) {
 			Swal.fire({
 				title: 'Oops!',
@@ -300,6 +543,239 @@
 		}
 	});
 
+	// dinamis form
+	var i = 0;
+	$('.btn_add').on('click', function() {
+		var html = '';
+		html += `<div class="row mt-2">
+				<div class="col-md-6">
+					<input type="text" class="form-control" id="data_agunan" name="data_agunan[]">
+				</div>
+				<div class="col-md-3">
+					<input type="text" class="form-control" id="nilai_pasar" name="nilai_pasar[]" onkeypress="return CheckNumeric()">
+				</div>
+				<div class="col-md-1">
+					<span class="btn btn-default btn_delete"><i class="fa fa-fw fa-minus"></i></span>
+				</div>
+			</div>`;
+
+		if (i < 4) {
+			$('.clone').append(html);
+			i++;
+		}
+	});
+
+	$('#agunanModal').on('click', '.btn_delete', function() {
+		$(this).parent().parent().remove();
+		i--;
+
+		var sum = 0;
+		$('input[name="nilai_pasar[]"]').each(function() {
+			sum += Number($(this).val());
+		});
+		$('input[name="sum_agunan"]').val(formatRp(sum));
+	});
+
+	$('#agunanModal').on('blur', 'input[name="nilai_pasar[]"]', function() {
+		var sum = 0;
+		$('input[name="nilai_pasar[]"]').each(function() {
+			sum += Number($(this).val());
+		});
+		$('input[name="sum_agunan"]').val(formatRp(sum));
+	});
+
+	var os_eks = 0,
+		os_fin = 0;
+	$('input[name="os_eksisting"]').on('blur', function() {
+		os_eks = Number($(this).val());
+		$('input[name="sum_exposure"]').val(formatRp(os_eks + os_fin));
+	});
+
+	$('input[name="tambah_pembiayaan"]').on('blur', function() {
+		os_fin = Number($(this).val());
+		$('input[name="sum_exposure"]').val(formatRp(os_eks + os_fin));
+
+		var sum_agunan = $('input[name="sum_agunan"]').val().replace(/[^0-9]/g, '');
+		var fixed_asset = sum_agunan / (os_eks + os_fin);
+
+		$('input[name="fixed_asset"]').val(fixed_asset.toFixed(2) + ' %');
+	});
+
+
+	// form usulan
+	var n = 0;
+	$('#usulanModal').on('click', '.plus', function() {
+		var html = `<div class="form-group row">
+							<div class="col-sm-2">
+								<input type="text" class="form-control" id="nm_biaya" name="nm_biaya[]" placeholder="nama biaya">
+							</div>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" id="nom_biaya" name="nom_biaya[]" placeholder="nominal" onkeypress="return CheckNumeric()">
+							</div>
+							<label class="col-sm-2 col-form-label minus"><span class="btn btn-xs btn-default"><i class="fa fa-fa fa-minus"></i></span></label>
+						</div>`;
+
+		if (n < 4) {
+			n++;
+			$('.clone_biaya').append(html);
+		}
+	});
+
+	$('#usulanModal').on('click', '.minus', function() {
+		$(this).parent().remove();
+		n--;
+	});
+
+	$('#fm_usulan').on('submit', function(evt) {
+		evt.preventDefault();
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/proses_usulan') ?>',
+			type: 'post',
+			dataType: 'json',
+			data: $(this).serialize(),
+			success: function(data) {
+				Swal.fire({
+					title: 'Sukses',
+					icon: 'success',
+					text: data.msg,
+					timer: 2000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				}).then((result) => {
+					if (result.dismiss === Swal.DismissReason.timer) {
+						location.reload();
+					}
+				})
+			}
+		});
+	});
+
+
+	// form syarat akad
+	var i_akad = 0,
+		i_cair = 0,
+		i_lain = 0;
+
+	$('.btn_akad').on('click', function() {
+		i_akad++;
+
+		var content = `<div class="form-row">
+								<div class="form-group col-md-8">
+									<textarea name="syarat_akad[]" id="syarat_akad" class="form-control" rows="2"></textarea>
+								</div>
+								<div class="col-md-1">
+									<span class="btn btn-default"><i class="fa fa-fw fa-minus"></i></span>
+								</div>
+							</div>`;
+		$('.clone_syarat_akad').append(content);
+	});
+
+	$('.btn_cair').on('click', function() {
+		i_cair++;
+
+		var content = `<div class="form-row">
+								<div class="form-group col-md-8">
+									<textarea name="syarat_cair[]" id="syarat_cair" class="form-control" rows="2"></textarea>
+								</div>
+								<div class="col-md-1">
+									<span class="btn btn-default"><i class="fa fa-fw fa-minus"></i></span>
+								</div>
+							</div>`;
+		$('.clone_syarat_cair').append(content);
+	});
+
+	$('.btn_lain').on('click', function() {
+		i_lain++;
+
+		var content = `<div class="form-row">
+								<div class="form-group col-md-8">
+									<textarea name="syarat_lain[]" id="syarat_lain" class="form-control" rows="2"></textarea>
+								</div>
+								<div class="col-md-1">
+									<span class="btn btn-default"><i class="fa fa-fw fa-minus"></i></span>
+								</div>
+							</div>`;
+		$('.clone_syarat_lain').append(content);
+	});
+
+	$('#syaratModal').on('click', '.btn-default>.fa-minus', function() {
+		$(this).parent().parent().parent().remove();
+	});
+
+	$('#fm_syarat').on('submit', function(evt) {
+		evt.preventDefault();
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/proses_syarat') ?>',
+			type: 'post',
+			dataType: 'json',
+			data: $(this).serialize(),
+			success: function(data) {
+				Swal.fire({
+					title: 'Sukses',
+					icon: 'success',
+					text: data.msg,
+					timer: 2000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				}).then((result) => {
+					if (result.dismiss === Swal.DismissReason.timer) {
+						location.reload();
+					}
+				})
+			}
+		});
+	});
+</script>
+
+<script>
+	function upload(id) {
+		$('#historyModal').modal('show');
+		$('#invoice_upl').val(id);
+	}
+
+	function usulan(id) {
+		$('#usulanModal').modal('show');
+		$('input[name="kd_invoice"]').val(id);
+	}
+
+	function limit(id) {
+		$('#perhitunganModal').modal('show');
+		$('#invoice').val(id);
+		$.ajax({
+			url: '<?= site_url('sales/finance/history_tagihan/') ?>' + id,
+			type: 'post',
+			dataType: 'json',
+			success: function(respon) {
+				let tagihan = '';
+				let limit = '';
+
+				for (let i = 0; i < respon.tagihan.length; i++) {
+					tagihan += respon.tagihan[i];
+				}
+				$('#tbl_perhitungan tbody').html(tagihan);
+
+				$('#max_limit').val(respon.limit[0]);
+				for (let i = 1; i < respon.limit.length; i++) {
+					limit += respon.limit[i];
+				}
+				$('#tbl_waad').html(limit);
+			}
+		});
+		// $('#invoice_upl').val(id);
+	}
+
+	function agunan(id) {
+		$('#agunanModal').modal('show');
+		$('input[name="kd_invoice"]').val(id);
+	}
+
+	function syarat(id) {
+		$('#syaratModal').modal('show');
+		$('input[name="kd_invoice"]').val(id);
+	}
+
 	function detail(key) {
 		$('#detail_modal').modal('show');
 		$('.modal-title-detail').text('Detail Form Pengajuan Pembiayaan');
@@ -307,6 +783,7 @@
 		$('.detail-menu-tab').first().addClass('active');
 		$('.tab-pane').first().addClass('show active');
 
+		$('input[name="kd_invoice"]').val(key);
 		$.ajax({
 			url: '<?= site_url('sales/finance/detail/') ?>' + key,
 			type: 'get',
@@ -325,7 +802,6 @@
 				let dokumen = res.dokumen;
 				let survey = res.survey;
 				let analisa = res.analisa;
-				let history = res.history;
 
 				// fm_pic
 				$('#id_penerima').val(pic.dokumen_pic);
@@ -619,7 +1095,6 @@
 				$('#tbl_aspek tbody').html(tr_aspek);
 
 				// fm_analisa
-				$('#kd_invoice').val(key);
 				if (analisa != null) {
 					$('input:radio[name="kyc_buyer"][value="' + analisa.kyc_buyer + '"]')[0].checked = true;
 					$('input:radio[name="td_buyer"][value="' + analisa.trade_buyer + '"]')[0].checked = true;
@@ -640,78 +1115,234 @@
 					$('input:radio[name="pembayaran_seller"][value="' + analisa.pembayaran_seller + '"]')[0].checked = true;
 
 					$(':radio:not(:checked)').attr('disabled', true);
-					$('.btn-primary').css('display', 'none');
+					$('.btn_analisa').css('display', 'none');
+				} else {
+					$('#fm_analisa')[0].reset();
 
-					if (pembiayaan.status == 'Proses Komite') {
-						var test = `<li class="nav-item">
-							<a class="nav-link detail-menu-tab" id="history-tab" data-toggle="pill" href="#tab-history" role="tab" aria-controls="tab-history" aria-selected="false"><i class="fa fa-history mr-1"></i> History Penagihan</a>
-						</li>`;
+					$(':radio:not(:checked)').attr('disabled', false);
+					$('.btn_analisa').css('display', 'block');
+				}
 
-						$(test).insertAfter($('.nav-item').last());
-						var content = '',
-							tbl_content = '',
-							avg_bln = 0,
-							avg_hari = 0;
-						for (let i = 0; i < history.length; i++) {
-							avg_bln += history[i].avg_tagihan_bln / history.length;
-							avg_hari += history[i].avg_tagihan_hari / history.length;
+				if (pembiayaan.status == 'Analisa aspek agunan') {
+					fun_history(key);
+				}
 
-							content += '<tr>';
-							content += '<td>' + (i + 1) + '</td>';
-							content += '<td>' + history[i].nm_pemberi_kerja + '</td>';
-							content += '<td>' + history[i].nm_pekerjaan + '</td>';
-							content += '<td>' + history[i].periode_pekerjaan + '</td>';
-							content += '<td>' + formatRp(history[i].avg_tagihan_bln) + '</td>';
-							content += '<td>' + history[i].periode_tagihan + '</td>';
-							content += '<td>' + formatRp(history[i].avg_tagihan_hari) + '</td>';
-							content += '<td>' + history[i].rek_tagihan + '</td>';
-							content += '</tr>';
-						}
+				if (pembiayaan.status == 'Proses usulan pembiayaan') {
+					fun_history(key);
+					fun_agunan(key);
+				}
 
-						tbl_content += '<tr><th>Rata-rata Tagihan per bulan</th><td>' + formatRp(avg_bln) + '</td></tr>';
-						tbl_content += '<tr><th>Rata-rata Hari Tagihan</th><td>' + formatRp((avg_hari / 30).toFixed(2)) + '</td></tr>';
-						tbl_content += '<tr><th>Maksimal Limit Wa`ad</th><th>' + formatRp(avg_bln * (avg_hari / 30)) + '</th></tr>';
-						tbl_content += '<tr style="background-color: #e4e4e4"><th>Usulan Wa`ad</th><th>' + formatRp(pembiayaan.usulan_waad) + '</th></tr>';
+				if (pembiayaan.status == 'Input syarat pembiayaan') {
+					fun_history(key);
+					fun_agunan(key);
+					fun_usulan(key);
+				}
 
-						$('#tab-history tbody').html(content);
-						$('#tab-history #tbl_waad').html(tbl_content);
-
-					} else {
-						$('#history-tab').remove();
-					}
+				if (pembiayaan.status == 'Proses komite') {
+					fun_history(key);
+					fun_agunan(key);
+					fun_usulan(key);
+					fun_syarat(key);
 				}
 			}
 		});
 	}
 
-	function upload(id) {
-		$('#historyModal').modal('show');
-		$('#invoice_upl').val(id);
-	}
+	function fun_history(key) {
+		var content = '',
+			tbl_content = '',
+			avg_bln = 0,
+			avg_hari = 0;
 
-	function limit(id) {
-		$('#perhitunganModal').modal('show');
-		$('#invoice').val(id);
+		$('#history-tab').css('display', 'block');
+
 		$.ajax({
-			url: '<?= site_url('sales/finance/history_tagihan/') ?>' + id,
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
 			type: 'post',
 			dataType: 'json',
-			success: function(respon) {
-				let tagihan = '';
-				let limit = '';
+			success: function(data) {
+				let pembiayaan = data.pembiayaan;
+				let history = data.history;
 
-				for (let i = 0; i < respon.tagihan.length; i++) {
-					tagihan += respon.tagihan[i];
-				}
-				$('#tbl_perhitungan tbody').html(tagihan);
+				for (let i = 0; i < history.length; i++) {
+					avg_bln += history[i].avg_tagihan_bln / history.length;
+					avg_hari += history[i].avg_tagihan_hari / history.length / 30;
 
-				$('#max_limit').val(respon.limit[0]);
-				for (let i = 1; i < respon.limit.length; i++) {
-					limit += respon.limit[i];
+					content += '<tr>';
+					content += '<td>' + (i + 1) + '</td>';
+					content += '<td>' + history[i].nm_pemberi_kerja + '</td>';
+					content += '<td>' + history[i].nm_pekerjaan + '</td>';
+					content += '<td>' + history[i].periode_pekerjaan + '</td>';
+					content += '<td>' + formatRp(history[i].avg_tagihan_bln) + '</td>';
+					content += '<td>' + history[i].periode_tagihan + '</td>';
+					content += '<td>' + history[i].avg_tagihan_hari + ' Hari</td>';
+					content += '<td>' + history[i].rek_tagihan + '</td>';
+					content += '</tr>';
 				}
-				$('#tbl_waad').html(limit);
+
+				tbl_content += '<tr><th>Rata-rata Tagihan per bulan</th><td>' + formatRp(avg_bln) + '</td></tr>';
+				tbl_content += '<tr><th>Rata-rata Hari Tagihan</th><td>' + Math.ceil(avg_hari) + ' Hari</td></tr>';
+				tbl_content += '<tr><th>Maksimal Limit Wa`ad</th><td>' + formatRp(avg_bln * Math.ceil(avg_hari)) + '</td></tr>';
+				tbl_content += '<tr style="background-color: #e4e4e4"><th>Usulan Wa`ad</th><th>' + formatRp(pembiayaan.usulan_waad) + '</th></tr>';
+
+				$('#tab-history tbody').html(content);
+				$('#tab-history #tbl_waad').html(tbl_content);
 			}
 		});
-		// $('#invoice_upl').val(id);
+	}
+
+	function fun_agunan(key) {
+		var cont_agunan = '',
+			tbl_agunan = '';
+
+		$('#agunan-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let agunan = data.agunan;
+				let analisa_agn = data.analisa_agn;
+
+				for (let i = 0; i < agunan.length; i++) {
+					cont_agunan += '<tr>';
+					cont_agunan += '<td style="width: 15px">' + (i + 1) + '</td>';
+					cont_agunan += '<td>' + agunan[i].data_agunan + '</td>';
+					cont_agunan += '<td>' + formatRp(agunan[i].nilai_pasar) + '</td>';
+					cont_agunan += '</tr>';
+				}
+
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Total Nilai Agunan</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.total_agunan) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>OS Pembiayaan Exsisting</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.os_eksisting) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Tambahan Pembiayaan</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.tambahan_pembiayaan) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Total Exposure</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.total_exposure) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr style="background-color: #e4e4e4">';
+				tbl_agunan += '<th>CCR Agunan Fixed Asset</th>';
+				tbl_agunan += '<th>' + analisa_agn.fixed_asset + ' %</th>';
+				tbl_agunan += '</tr>';
+
+				$('#tbl_agunan tbody').html(cont_agunan);
+				$('#tbl_analisa_agn').html(tbl_agunan);
+			}
+		});
+	}
+
+	function fun_usulan(key) {
+		var content = '',
+			tbl_content = '';
+
+		$('#usulan-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let usulan = data.usulan;
+
+
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Skim Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.skim_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Sifat Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.sifat_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Tujuan Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.tujuan_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Jangka Waktu Wa`ad</th>';
+				tbl_content += '<td>' + usulan.tenor_waad + ' Bulan</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Jangka Waktu per Penarikan</th>';
+				tbl_content += '<td>' + usulan.jk_penarikan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Cara Pencairan</th>';
+				tbl_content += '<td>' + usulan.cara_pencairan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Sumber dan Cara Pelunasan</th>';
+				tbl_content += '<td>' + usulan.sumber_pelunasan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Biaya-Biaya</th>';
+				tbl_content += '<td>&nbsp;</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">a. Biaya Administrasi</th>';
+				tbl_content += '<td>' + formatRp(usulan.biaya_admin) + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">b. Biaya Asuransi Penjaminan</th>';
+				tbl_content += '<td>' + formatRp(usulan.biaya_penjamin) + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+
+				for (let i = 0; i < data.biaya_lain.length; i++) {
+					content += `<div class="form-group row">
+										<label for="staticEmail" class="col-sm-3 col-form-label">` + data.biaya_lain[i].nama + `</label>
+										<div class="col-sm my-auto">
+											` + formatRp(data.biaya_lain[i].nominal) + `
+										</div>
+									</div>`;
+				}
+
+				tbl_content += '<th style="width: 150px">c. Biaya Lain-lain</th>';
+				tbl_content += '<td class="py-1">' + content + '</td>';
+				tbl_content += '</tr>';
+
+				$('#tbl_usulan').html(tbl_content);
+			}
+		});
+	}
+
+	function fun_syarat(key) {
+		var content = '';
+
+		$('#syarat-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let syarat = data.syarat;
+
+				content += '<label>Syarat Penandatanganan Akad Pembiayaan</label>';
+				for (let i = 0; i < syarat.akad.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.akad[i] + '</p>';
+				}
+
+				content += '<label>Syarat Pencairan Pembiayaan</label>';
+				for (let i = 0; i < syarat.cair.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.cair[i] + '</p>';
+				}
+
+				content += '<label>Syarat Lain-lain</label>';
+				for (let i = 0; i < syarat.lain.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.lain[i] + '</p>';
+				}
+
+				$('#tab-syarat').html(content);
+			}
+		});
 	}
 </script>
