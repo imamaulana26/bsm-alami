@@ -12,7 +12,7 @@ class Dashboard extends CI_Controller
 	public function index()
 	{
 		$data = array(
-			'page' => 'admin/v_dashboard'
+			'page' => 'staff/v_dashboard'
 		);
 
 		$this->load->view('layout/content', $data);

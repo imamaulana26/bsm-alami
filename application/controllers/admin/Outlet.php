@@ -199,7 +199,10 @@ class Outlet extends CI_Controller
 	// module area
 	public function area()
 	{
-		$area = $this->db->select('a.*, b.nm_region')->from('tbl_area a')->join('tbl_region b', 'a.id_region = b.id', 'left')->where(['a.IsDelete' => 0])->order_by('b.id', 'asc')->get()->result_array();
+		$area = $this->db->select('a.*, b.nm_region')->from('tbl_area a')
+			->join('tbl_region b', 'a.id_region = b.id', 'left')
+			->where(['a.IsDelete' => 0, 'b.IsDelete' => 0])->order_by('b.id', 'asc')
+			->get()->result_array();
 
 		$data = array(
 			'page' => 'admin/outlet/v_area',
@@ -297,7 +300,8 @@ class Outlet extends CI_Controller
 		$cabang = $this->db->select('a.*, b.nm_area, c.nm_region')->from('tbl_cabang a')
 			->join('tbl_area b', 'a.area = b.kd_area', 'left')
 			->join('tbl_region c', 'a.region = c.id', 'left')
-			->where(['a.IsDelete' => 0])->order_by('c.id', 'asc')
+			->where(['a.IsDelete' => 0, 'b.IsDelete' => 0, 'c.IsDelete' => 0])
+			->order_by('c.id', 'asc')->order_by('b.kd_area', 'asc')
 			->get()->result_array();
 
 		$data = array(
@@ -373,8 +377,6 @@ class Outlet extends CI_Controller
 		$cek = $this->db->get_where('tbl_cabang', ['id' => $id])->row_array();
 		$this->db->trans_begin();
 
-		$this->db->update('tbl_region', ['IsDelete' => 1], ['id' => $cek['region']]);
-		$this->db->update('tbl_area', ['IsDelete' => 1], ['kd_area' => $cek['area']]);
 		$this->db->update('tbl_cabang', ['IsDelete' => 1], ['id' => $id]);
 
 		if ($this->db->trans_status() === false) {

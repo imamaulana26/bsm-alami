@@ -20,6 +20,8 @@
 <script src="<?= base_url('assets/template') ?>/plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- OPTIONAL SCRIPTS -->
 <script src="<?= base_url('assets/template') ?>/dist/js/demo.js"></script>
+<!-- Editor -->
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
 <script src="<?= base_url('assets/template') ?>/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
@@ -55,6 +57,10 @@
 			$('#new').addClass('active');
 		} else if (exp[1] == 'proses') {
 			$('#proses').addClass('active');
+		} else if (exp[1] == 'komite') {
+			$('#komite').addClass('active');
+		} else if (exp[1] == 'pencairan') {
+			$('#pencairan').addClass('active');
 		} else {
 			$('#all').addClass('active');
 		}

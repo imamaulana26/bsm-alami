@@ -56,6 +56,8 @@ $route['translate_uri_dashes'] = FALSE;
 // pembiayaan
 $route['sales/finance-new'] = 'sales/finance_new';
 $route['sales/finance-proses'] = 'sales/finance_proses';
+$route['sales/finance-komite'] = 'sales/finance_komite';
+$route['sales/finance-pencairan'] = 'sales/finance_pencairan';
 $route['sales/finance'] = 'sales/finance';
 // user
 $route['admin/user-pusat'] = 'admin/user/pusat';

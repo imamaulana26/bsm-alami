@@ -34,7 +34,6 @@
 									<tr>
 										<th>#</th>
 										<th>NIP User</th>
-										<th>Kode AO</th>
 										<th>Nama Lengkap</th>
 										<th>Jabatan</th>
 										<th>Group Unit Kerja</th>
@@ -49,7 +48,6 @@
 										<tr>
 											<td><?= $key + 1; ?></td>
 											<td><?= $val['nip']; ?></td>
-											<td><?= $val['kode_ao']; ?></td>
 											<td>
 												<?= $val['nama']; ?><br>
 												<span class="text-primary"><?= $val['email']; ?></span>

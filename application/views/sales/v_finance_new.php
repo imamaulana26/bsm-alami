@@ -166,7 +166,7 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {
@@ -184,7 +184,7 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {

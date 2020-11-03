@@ -15,6 +15,8 @@
 	<link rel="stylesheet" href="<?= base_url('assets/template') ?>/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?= base_url('assets/template') ?>/dist/css/adminlte.min.css">
+	<!-- Editor -->
+	<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css">
 	<!-- Toastr -->
 	<link rel="stylesheet" href="<?= base_url('assets/template') ?>/plugins/toastr/toastr.min.css">
 	<!-- Sweetalert2 -->

@@ -43,6 +43,9 @@
 							<li class="nav-item">
 								<a class="nav-link detail-menu-tab" id="syarat-tab" data-toggle="pill" href="#tab-syarat" role="tab" aria-controls="tab-syarat" aria-selected="false" style="display: none;">Syarat Pembiayaan</a>
 							</li>
+							<li class="nav-item">
+								<a class="nav-link detail-menu-tab" id="komite-tab" data-toggle="pill" href="#tab-komite" role="tab" aria-controls="tab-komite" aria-selected="false" style="display: none;">Catatan Komite</a>
+							</li>
 						</ul>
 					</div>
 					<div class="card-body">
@@ -923,6 +926,25 @@
 							</div>
 
 							<div class="tab-pane fade" id="tab-syarat" role="tabpanel" aria-labelledby="syarat-tab">
+							</div>
+
+							<div class="tab-pane fade" id="tab-komite" role="tabpanel" aria-labelledby="komite-tab">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table" id="tbl_komite">
+											<thead>
+												<tr>
+													<th>Tgl. Komite</th>
+													<th>Pengusul Pembiayaan</th>
+													<th>Pemutus Pembiayaan</th>
+													<th>Hasil Komite</th>
+													<th>Catatan Komite</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

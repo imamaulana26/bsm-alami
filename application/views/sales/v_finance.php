@@ -283,7 +283,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="fm_usulan">
+				<form id="fm_usulan" autocomplete="off">
 					<input type="hidden" name="kd_invoice" id="kd_invoice" class="form-control">
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Skim Pembiayaan</label>
@@ -379,7 +379,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="fm_syarat">
+				<form id="fm_syarat" autocomplete="off">
 					<input type="hidden" name="kd_invoice" id="kd_invoice" class="form-control">
 					<div class="form-row">
 						<div class="form-group col-md-8">
@@ -408,7 +408,6 @@
 		</div>
 	</div>
 </div>
-
 
 
 <?php $this->load->view('sales/detail/modal_finance'); ?>
@@ -466,7 +465,7 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {
@@ -484,7 +483,7 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {
@@ -596,7 +595,7 @@
 		$('input[name="sum_exposure"]').val(formatRp(os_eks + os_fin));
 
 		var sum_agunan = $('input[name="sum_agunan"]').val().replace(/[^0-9]/g, '');
-		var fixed_asset = sum_agunan / (os_eks + os_fin);
+		var fixed_asset = (sum_agunan / (os_eks + os_fin)) * 100;
 
 		$('input[name="fixed_asset"]').val(fixed_asset.toFixed(2) + ' %');
 	});
@@ -782,6 +781,11 @@
 
 		$('.detail-menu-tab').first().addClass('active');
 		$('.tab-pane').first().addClass('show active');
+
+		$('#history-tab').css('display', 'none');
+		$('#agunan-tab').css('display', 'none');
+		$('#usulan-tab').css('display', 'none');
+		$('#syarat-tab').css('display', 'none');
 
 		$('input[name="kd_invoice"]').val(key);
 		$.ajax({
@@ -1119,8 +1123,13 @@
 				} else {
 					$('#fm_analisa')[0].reset();
 
-					$(':radio:not(:checked)').attr('disabled', false);
-					$('.btn_analisa').css('display', 'block');
+					if ('<?= $_SESSION['jabatan'] ?>' != 'BBRM') {
+						$(':radio:not(:checked)').attr('disabled', true);
+						$('.btn_analisa').css('display', 'none');
+					} else {
+						$(':radio:not(:checked)').attr('disabled', false);
+						$('.btn_analisa').css('display', 'block');
+					}
 				}
 
 				if (pembiayaan.status == 'Analisa aspek agunan') {

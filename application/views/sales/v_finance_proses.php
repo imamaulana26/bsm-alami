@@ -32,7 +32,6 @@
 										<th class="text-center">Nilai Pengajuan</th>
 										<th class="text-center">Tenor</th>
 										<th class="text-center">Status</th>
-										<th class="text-center">Aksi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -54,10 +53,6 @@
 											<td>Rp <?= number_format($dt['nom_pengajuan'], 2, ',', '.') ?></td>
 											<td class="text-center"><?= $dt['tenor']; ?> Bulan</td>
 											<td class="text-center"><?= $dt['status']; ?></td>
-											<td class="text-center">
-												<!-- <span class="btn btn-xs bg-gradient-info" onclick="detail_modal('<?= $dt['kd_invoice'] ?>')"><i class="fa fa-fw fa-sm fa-info-circle"></i></span> -->
-												<span class="btn btn-xs bg-gradient-warning"><i class="fa fa-fw fa-sm fa-comment-alt"></i></span>
-											</td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>
@@ -89,7 +84,7 @@
 	</div>
 </div>
 
-<?php $this->load->view('sales/detail/modal_finance_proses'); ?>
+<?php $this->load->view('sales/detail/modal_finance'); ?>
 <?php $this->load->view('layout/footer'); ?>
 <?php $this->load->view('layout/script'); ?>
 
@@ -120,7 +115,7 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {
@@ -138,14 +133,16 @@
 
 		$('#detail_modal').modal('hide');
 		$('#exampleModal').modal('show');
-		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-download"></i></a>');
+		$('.modal-title-view').html(file + '<a href="<?= site_url('files/download/') ?>' + key + '/' + file + '" class="ml-2"><i class="fa fa-fw fa-download fa-xs"></i></a>');
 		if (exp[1] == 'pdf') {
 			$('.modal-body.preview').html('<iframe frameborder="0" style="width: 100%; height: 480px;" src="' + path + '"></iframe>');
 		} else {
 			$('.modal-body.preview').html('<img style="width: 100%; height: auto;" src="' + path + '"></img>');
 		}
 	});
+</script>
 
+<script>
 	function detail_modal(key) {
 		$('#detail_modal').modal('show');
 		$('.modal-title-detail').text('Detail Form Pengajuan Pembiayaan');
@@ -154,7 +151,7 @@
 		$('.tab-pane').first().addClass('show active');
 
 		$.ajax({
-			url: '<?= site_url('sales/finance_all/detail/') ?>' + key,
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
 			type: 'get',
 			dataType: 'json',
 			success: function(res) {
@@ -485,8 +482,238 @@
 					$('input:radio[name="pembayaran_seller"][value="' + analisa.pembayaran_seller + '"]')[0].checked = true;
 
 					$(':radio:not(:checked)').attr('disabled', true);
-					$('.btn-primary').css('display', 'none');
+					$('.btn_analisa').css('display', 'none');
+				} else {
+					$('#fm_analisa')[0].reset();
+
+					if ('<?= $_SESSION['jabatan'] ?>' != 'BBRM') {
+						$(':radio:not(:checked)').attr('disabled', true);
+						$('.btn_analisa').css('display', 'none');
+					} else {
+						$(':radio:not(:checked)').attr('disabled', false);
+						$('.btn_analisa').css('display', 'block');
+					}
 				}
+
+				if (pembiayaan.status == 'Analisa aspek agunan') {
+					fun_history(key);
+				}
+
+				if (pembiayaan.status == 'Proses usulan pembiayaan') {
+					fun_history(key);
+					fun_agunan(key);
+				}
+
+				if (pembiayaan.status == 'Input syarat pembiayaan') {
+					fun_history(key);
+					fun_agunan(key);
+					fun_usulan(key);
+				}
+
+				if (pembiayaan.status == 'Proses komite') {
+					fun_history(key);
+					fun_agunan(key);
+					fun_usulan(key);
+					fun_syarat(key);
+				}
+			}
+		});
+	}
+
+	function fun_history(key) {
+		var content = '',
+			tbl_content = '',
+			avg_bln = 0,
+			avg_hari = 0;
+
+		$('#history-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let pembiayaan = data.pembiayaan;
+				let history = data.history;
+
+				for (let i = 0; i < history.length; i++) {
+					avg_bln += history[i].avg_tagihan_bln / history.length;
+					avg_hari += history[i].avg_tagihan_hari / history.length / 30;
+
+					content += '<tr>';
+					content += '<td>' + (i + 1) + '</td>';
+					content += '<td>' + history[i].nm_pemberi_kerja + '</td>';
+					content += '<td>' + history[i].nm_pekerjaan + '</td>';
+					content += '<td>' + history[i].periode_pekerjaan + '</td>';
+					content += '<td>' + formatRp(history[i].avg_tagihan_bln) + '</td>';
+					content += '<td>' + history[i].periode_tagihan + '</td>';
+					content += '<td>' + history[i].avg_tagihan_hari + ' Hari</td>';
+					content += '<td>' + history[i].rek_tagihan + '</td>';
+					content += '</tr>';
+				}
+
+				tbl_content += '<tr><th>Rata-rata Tagihan per bulan</th><td>' + formatRp(avg_bln) + '</td></tr>';
+				tbl_content += '<tr><th>Rata-rata Hari Tagihan</th><td>' + Math.ceil(avg_hari) + ' Hari</td></tr>';
+				tbl_content += '<tr><th>Maksimal Limit Wa`ad</th><td>' + formatRp(avg_bln * Math.ceil(avg_hari)) + '</td></tr>';
+				tbl_content += '<tr style="background-color: #e4e4e4"><th>Usulan Wa`ad</th><th>' + formatRp(pembiayaan.usulan_waad) + '</th></tr>';
+
+				$('#tab-history tbody').html(content);
+				$('#tab-history #tbl_waad').html(tbl_content);
+			}
+		});
+	}
+
+	function fun_agunan(key) {
+		var cont_agunan = '',
+			tbl_agunan = '';
+
+		$('#agunan-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let agunan = data.agunan;
+				let analisa_agn = data.analisa_agn;
+
+				for (let i = 0; i < agunan.length; i++) {
+					cont_agunan += '<tr>';
+					cont_agunan += '<td style="width: 15px">' + (i + 1) + '</td>';
+					cont_agunan += '<td>' + agunan[i].data_agunan + '</td>';
+					cont_agunan += '<td>' + formatRp(agunan[i].nilai_pasar) + '</td>';
+					cont_agunan += '</tr>';
+				}
+
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Total Nilai Agunan</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.total_agunan) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>OS Pembiayaan Exsisting</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.os_eksisting) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Tambahan Pembiayaan</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.tambahan_pembiayaan) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr>';
+				tbl_agunan += '<th>Total Exposure</th>';
+				tbl_agunan += '<td>' + formatRp(analisa_agn.total_exposure) + '</td>';
+				tbl_agunan += '</tr>';
+				tbl_agunan += '<tr style="background-color: #e4e4e4">';
+				tbl_agunan += '<th>CCR Agunan Fixed Asset</th>';
+				tbl_agunan += '<th>' + analisa_agn.fixed_asset + ' %</th>';
+				tbl_agunan += '</tr>';
+
+				$('#tbl_agunan tbody').html(cont_agunan);
+				$('#tbl_analisa_agn').html(tbl_agunan);
+			}
+		});
+	}
+
+	function fun_usulan(key) {
+		var content = '',
+			tbl_content = '';
+
+		$('#usulan-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let usulan = data.usulan;
+
+
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Skim Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.skim_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Sifat Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.sifat_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Tujuan Pembiayaan</th>';
+				tbl_content += '<td>' + usulan.tujuan_pembiayaan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Jangka Waktu Wa`ad</th>';
+				tbl_content += '<td>' + usulan.tenor_waad + ' Bulan</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Jangka Waktu per Penarikan</th>';
+				tbl_content += '<td>' + usulan.jk_penarikan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Cara Pencairan</th>';
+				tbl_content += '<td>' + usulan.cara_pencairan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Sumber dan Cara Pelunasan</th>';
+				tbl_content += '<td>' + usulan.sumber_pelunasan + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">Biaya-Biaya</th>';
+				tbl_content += '<td>&nbsp;</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">a. Biaya Administrasi</th>';
+				tbl_content += '<td>' + formatRp(usulan.biaya_admin) + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+				tbl_content += '<th style="width: 150px">b. Biaya Asuransi Penjaminan</th>';
+				tbl_content += '<td>' + formatRp(usulan.biaya_penjamin) + '</td>';
+				tbl_content += '</tr>';
+				tbl_content += '<tr>';
+
+				for (let i = 0; i < data.biaya_lain.length; i++) {
+					content += `<div class="form-group row">
+										<label for="staticEmail" class="col-sm-3 col-form-label">` + data.biaya_lain[i].nama + `</label>
+										<div class="col-sm my-auto">
+											` + formatRp(data.biaya_lain[i].nominal) + `
+										</div>
+									</div>`;
+				}
+
+				tbl_content += '<th style="width: 150px">c. Biaya Lain-lain</th>';
+				tbl_content += '<td class="py-1">' + content + '</td>';
+				tbl_content += '</tr>';
+
+				$('#tbl_usulan').html(tbl_content);
+			}
+		});
+	}
+
+	function fun_syarat(key) {
+		var content = '';
+
+		$('#syarat-tab').css('display', 'block');
+
+		$.ajax({
+			url: '<?= site_url('sales/finance/detail/') ?>' + key,
+			type: 'post',
+			dataType: 'json',
+			success: function(data) {
+				let syarat = data.syarat;
+
+				content += '<label>Syarat Penandatanganan Akad Pembiayaan</label>';
+				for (let i = 0; i < syarat.akad.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.akad[i] + '</p>';
+				}
+
+				content += '<label>Syarat Pencairan Pembiayaan</label>';
+				for (let i = 0; i < syarat.cair.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.cair[i] + '</p>';
+				}
+
+				content += '<label>Syarat Lain-lain</label>';
+				for (let i = 0; i < syarat.lain.length; i++) {
+					content += '<p class="ml-3">' + (i + 1) + ') ' + syarat.lain[i] + '</p>';
+				}
+
+				$('#tab-syarat').html(content);
 			}
 		});
 	}

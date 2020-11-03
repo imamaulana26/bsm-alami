@@ -110,6 +110,12 @@ class Finance extends CI_Controller
 			$data['syarat'] = $row;
 		}
 
+		$cek_komite = $this->db->get_where('tbl_komite', ['fk_kd_invoice' => $key])->num_rows();
+		if ($cek_komite > 0) {
+			$komite = $this->db->get_where('tbl_komite', ['fk_kd_invoice' => $key])->result_array();
+			$data['komite'] = $komite;
+		}
+
 		$data['pembiayaan'] = $pembiayaan;
 		$data['pic'] = $pic;
 		$data['perusahaan'] = $perusahaan;
